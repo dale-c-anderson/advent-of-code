@@ -13,13 +13,13 @@ def main():
         ints = list(map(int, chunk_list))
         my_sum = sum(ints)
         sums.append(my_sum)
-
     answer_part1 = max(sums)
-    print(["answer part 1", answer_part1])
 
     top_3_list = heapq.nlargest(3, sums)
     answer_part2 = sum(top_3_list)
-    print(["answer, part 2", answer_part2])
+
+    print(f'answer, part 1: {answer_part1}')
+    print(f'answer, part 2: {answer_part2}')
 
 
 if __name__ == "__main__":
