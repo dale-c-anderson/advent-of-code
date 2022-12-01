@@ -8,6 +8,7 @@ __version__ = "0.1.0"
 __license__ = "GPLv3"
 
 import argparse
+import heapq
 from logging.handlers import SysLogHandler
 import logging
 import sys
@@ -25,8 +26,14 @@ def main():
         ints = list(map(int, chunk_list))
         my_sum = sum(ints)
         sums.append(my_sum)
-    answer = max(sums)
-    print(answer)
+    answer_part1 = max(sums)
+    log.info(["answer part 1", answer_part1])
+
+    top_3_list = heapq.nlargest(3, sums)
+    answer_part2 = sum(top_3_list)
+    log.info(["answer, part 2", answer_part2])
+
+
 
 
 if __name__ == "__main__":
@@ -36,7 +43,7 @@ if __name__ == "__main__":
         "-v",
         "--verbose",
         action="count",
-        default=0,
+        default=1,
         help="Verbosity (-v, -vv, etc)")
     args = parser.parse_args()
 
