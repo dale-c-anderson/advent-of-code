@@ -17,7 +17,6 @@ import sys
 def main():
     handle = open("./input.txt")
     my_input = handle.read()
-    log.debug(["input", my_input])
     chunks = my_input.split("\n\n")
     sums = []
     for chunk in chunks:
