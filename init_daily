@@ -21,7 +21,18 @@ def main():
         copyfile('./_boilerplate.py', f'{date_slug}/part1.py')
     if not os.path.isfile(f'{date_slug}/part2.py'):
         copyfile('./_boilerplate.py', f'{date_slug}/part2.py')
-    subprocess.run('aoc', cwd=date_slug)  # Get aoc command line tool from https://github.com/scarvalhojr/aoc-cli
+
+    # Get the puzzle's readme
+    if os.path.isfile(f'{date_slug}/puzzle.md'):
+        print(f'Already downloaded {date_slug}/puzzle.md')
+    else:
+        subprocess.run('aoc', cwd=date_slug)
+
+    # Get the puzzle's input
+    if os.path.isfile(f'{date_slug}/input'):
+        print(f'Already downloaded {date_slug}/input')
+    else:
+        subprocess.run(['aoc', 'd'], cwd=date_slug)
 
 
 if __name__ == "__main__":
