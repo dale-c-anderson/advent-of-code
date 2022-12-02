@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import shutil
+from datetime import datetime
+import os
+from pytz import timezone
+from shutil import copyfile
+import subprocess
+
+
+
+def main():
+    if not shutil.which('aoc'):
+        raise(ValueError('AOC commandline util not found. Get it from https://github.com/scarvalhojr/aoc-cli'))
+    eastern = timezone('US/Eastern')
+    now = datetime.now(eastern)
+    YYYY = now.year
+    DD = str(now.day).rjust(2, '0')
+    date_slug = f'{YYYY}/{DD}'
+    os.makedirs(date_slug, exist_ok=True)
+    if not os.path.isfile(f'{date_slug}/part1.py'):
+        copyfile('./_boilerplate.py', f'{date_slug}/part1.py')
+    if not os.path.isfile(f'{date_slug}/part2.py'):
+        copyfile('./_boilerplate.py', f'{date_slug}/part2.py')
+    subprocess.run('aoc', cwd=date_slug)  # Get aoc command line tool from https://github.com/scarvalhojr/aoc-cli
+
+
+if __name__ == "__main__":
+    main()
