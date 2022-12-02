@@ -7,15 +7,14 @@ from shutil import copyfile
 import subprocess
 
 
-
 def main():
     if not shutil.which('aoc'):
         raise(ValueError('AOC commandline util not found. Get it from https://github.com/scarvalhojr/aoc-cli'))
     eastern = timezone('US/Eastern')
     now = datetime.now(eastern)
-    YYYY = now.year
-    DD = str(now.day).rjust(2, '0')
-    date_slug = f'{YYYY}/{DD}'
+    yyyy = now.year
+    dd = str(now.day).rjust(2, '0')
+    date_slug = f'{yyyy}/{dd}'
     os.makedirs(date_slug, exist_ok=True)
     if not os.path.isfile(f'{date_slug}/part1.py'):
         copyfile('./_boilerplate.py', f'{date_slug}/part1.py')
