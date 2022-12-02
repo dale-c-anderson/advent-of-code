@@ -1,0 +1,3 @@
+# Don't commit puzzle readmes or input files; just the solutions.
+puzzle.md
+input
