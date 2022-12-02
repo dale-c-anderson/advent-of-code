@@ -13,7 +13,7 @@ import sys
 
 
 def main():
-    handle = open("./input.txt")
+    handle = open("./input")
     data = handle.read()
 
 
