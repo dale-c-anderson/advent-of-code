@@ -59,7 +59,7 @@ def main():
             elif desired_outcome == draw:
                 my_play = paper
             elif desired_outcome == lose:
-                my_play = scissors
+                my_play = rock
         elif op_play == scissors:
             if desired_outcome == win:
                 my_play = rock
