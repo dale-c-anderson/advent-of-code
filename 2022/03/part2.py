@@ -17,10 +17,14 @@ def main():
     rucksacks = handle.read().split('\n')
     rucksacks = list(filter(None, rucksacks))
     total = 0
-    for sack in rucksacks:
-        a, b = splitstring(sack)
-        log.debug(f'a: {a}, b: {b}')
-        common = list(set(a)&set(b))
+    sets_of_3_bags = []
+    log.debug(f'len(rucksacks): {len(rucksacks)}')
+    for i in range(0, len(rucksacks), 3): 
+        sets_of_3_bags.append(rucksacks[i:i+3]) 
+
+    for triplet in sets_of_3_bags:
+        log.debug(f'triplet: {triplet}')
+        common = list(set(triplet[0]) & set(triplet[1]) & set(triplet[2]))
         log.debug(f'common: {common}')
         letter_score = score(common[0])
         log.debug(f'score: {letter_score}')
