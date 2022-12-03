@@ -16,10 +16,27 @@ def main():
     handle = open("./input")
     rucksacks = handle.read().split('\n')
     rucksacks = list(filter(None, rucksacks))
+    total = 0
     for sack in rucksacks:
         a, b = splitstring(sack)
         log.debug(f'a: {a}, b: {b}')
+        common = list(set(a)&set(b))
+        log.debug(f'common: {common}')
+        letter_score = score(common[0])
+        log.debug(f'score: {letter_score}')
+        total += letter_score
 
+    print(f'total: {total}')
+
+def score(letter):
+    if letter.isupper():
+        val = ord(letter) - 64 + 26
+    elif letter.islower():
+        val = ord(letter) - 96
+    else:
+        raise ValueError(f'Invalid letter: {letter}')
+    log.debug(val)
+    return val
 
 def splitstring(value):
     string1, string2 = value[:len(value)//2], value[len(value)//2:]
