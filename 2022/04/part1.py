@@ -7,10 +7,7 @@ def main():
     for pair in sa_pairs:
         sa_elf1, sa_elf2 = pair.split(',')
         if fully_contains(sa_elf1, sa_elf2) or fully_contains(sa_elf2, sa_elf1):
-            print("fully contained")
             count += 1
-        else:
-            print("not fully contained")
     print(f"answer: {count}")
 
 

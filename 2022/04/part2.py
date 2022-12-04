@@ -7,11 +7,7 @@ def main():
     for pair in sa_pairs:
         sa_elf1, sa_elf2 = pair.split(',')
         if overlaps(sa_elf1, sa_elf2) or overlaps(sa_elf2, sa_elf1):
-            print("overlaps")
             count += 1
-        else:
-            print("no overlap")
-
     print(f"answer: {count}")
 
 
