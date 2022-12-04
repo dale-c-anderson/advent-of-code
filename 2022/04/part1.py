@@ -14,8 +14,29 @@ import sys
 
 def main():
     handle = open("./input")
-    data = handle.read().split('\n')
+    sa_pairs = list(filter(None, handle.read().split('\n')))
+    count = 0
+    for pair in sa_pairs:
+        sa_elf1, sa_elf2 = pair.split(',')
+        log.debug(f"sa_elf1: {sa_elf1}, sa_elf2: {sa_elf2}")
+        if fully_contains(sa_elf1, sa_elf2) or fully_contains(sa_elf2, sa_elf1):
+            print("fully contained")
+            count += 1
+        else:
+            print("not fully contained")
 
+    print(f"part1 answer: {count}")
+
+
+def fully_contains(haystack, needle):
+    haystack_lb, haystack_ub = haystack.split('-')
+    needle_lb, needle_ub = needle.split('-')
+    return int(haystack_lb) <= int(needle_lb) and int(haystack_ub) >= int(needle_ub)
+
+
+def span_to_range(val):
+    a, b = val.split('-')
+    return range(int(a), int(b))
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
