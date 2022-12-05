@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Advent of Code (AoC) day 5
+Advent of Code 2022 (AoC) day 5
 """
 
 
