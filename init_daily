@@ -15,7 +15,6 @@ def main():
     download_input()
 
 
-# Render the j2 file as a new usable script and populate the date in the header comment
 def require_aoc():
     if not shutil.which('aoc'):
         raise(ValueError('AOC commandline util not found. Get it from https://github.com/scarvalhojr/aoc-cli'))
