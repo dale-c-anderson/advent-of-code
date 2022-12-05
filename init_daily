@@ -16,10 +16,12 @@ def main():
     dd = str(now.day).rjust(2, '0')
     date_slug = f'{yyyy}/{dd}'
     os.makedirs(date_slug, exist_ok=True)
-    if not os.path.isfile(f'{date_slug}/part1.py'):
-        copyfile('./_boilerplate.py', f'{date_slug}/part1.py')
-    if not os.path.isfile(f'{date_slug}/part2.py'):
-        copyfile('./_boilerplate.py', f'{date_slug}/part2.py')
+    dest_path = f'{date_slug}/solution.py'
+    if os.path.isfile(dest_path):
+        print(f'File {dest_path} already exists. Not overwriting.')
+    else:
+        copyfile('./_boilerplate.py', dest_path)
+        os.chmod(dest_path, 0o755)
 
     # Get the puzzle's readme
     if os.path.isfile(f'{date_slug}/puzzle.md'):

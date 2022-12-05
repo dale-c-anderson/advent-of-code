@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """
-Advent of Code (AoC) boilerplate script for daily puzzles
+Advent of Code (AoC) 2022 - Day XX
 """
 
 __author__ = "Dale Anderson"
-__version__ = "0.1.0"
-__license__ = "GPLv3"
 
 import argparse
 import logging
@@ -15,6 +13,20 @@ import sys
 def main():
     handle = open("./input")
     data = handle.read()
+
+    part1_answer = part1(data)
+    print(f'Part 1: {part1_answer}')
+
+    part2_answer = part2(data)
+    print(f'Part 2: {part2_answer}')
+
+
+def part1(data):
+    return 0
+
+
+def part2(data):
+    return 0
 
 
 if __name__ == "__main__":
