@@ -5,6 +5,7 @@ import os
 from pytz import timezone
 import subprocess
 from jinja2 import Template
+import argparse
 
 
 def main():
@@ -25,7 +26,7 @@ def make_new_script():
         print(f'File {new_script_dest} already exists. Not overwriting.')
         return
     with open('./solution.py.j2') as t:
-        rendered = Template(t.read()).render(DD=dd, YYYY=yyyy)
+        rendered = Template(t.read()).render(DD=args.day, default_year=args.year)
     with open(new_script_dest, "w") as fh:
         fh.write(rendered)
     os.chmod(new_script_dest, 0o755)
@@ -35,21 +36,68 @@ def download_readme():
     if os.path.isfile(f'{date_slug}/puzzle.md'):
         print(f'Already downloaded {date_slug}/puzzle.md')
         return
-    subprocess.run('aoc', cwd=date_slug)
+    subprocess.run(build_aoc_default_command(), cwd=date_slug)
 
 
 def download_input():
     if os.path.isfile(f'{date_slug}/input'):
         print(f'Already downloaded {date_slug}/input')
         return
-    subprocess.run(['aoc', 'd'], cwd=date_slug)
+    subprocess.run(build_aoc_default_command() + ['d'], cwd=date_slug)
+
+
+def build_aoc_default_command():
+    command = ['aoc']
+    if args.year:
+        command += ['-y', str(args.year)]
+    if args.day:
+        command += ['-d', str(args.day)]
+    return command
+
+
+def valid_day(s):
+    try:
+        day = int(s)
+        if day < 1 or day > 25:
+            raise ValueError()
+    except ValueError:
+        raise argparse.ArgumentTypeError(f'{s} is not a valid day')
+    return str(day).rjust(2, '0')
+
+
+def valid_year(s):
+    try:
+        year = int(s)
+        if year < 2015 or year > datetime.now(timezone('US/Eastern')).year:
+            raise ValueError()
+    except ValueError:
+        raise argparse.ArgumentTypeError(f'{s} is not a valid year')
+    return str(year)
 
 
 if __name__ == "__main__":
     eastern = timezone('US/Eastern')
     now = datetime.now(eastern)
-    yyyy = now.year
-    dd = str(now.day).rjust(2, '0')
-    date_slug = f'{yyyy}/{dd}'
+    default_year = now.year
+    default_day = str(now.day).rjust(2, '0')
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-d",
+        "--day",
+        dest="day",
+        default=default_day,
+        help="Puzzle day (defaults to today)",
+        type=valid_day,
+        )
+    parser.add_argument(
+        "-y",
+        "--year",
+        dest="year",
+        default=default_year,
+        help="Puzzle year (defaults to this year)",
+        type=valid_year
+        )
+    args = parser.parse_args()
+    date_slug = f'{args.year}/{args.day}'
     new_script_dest = f'{date_slug}/solution.py'
     main()
