@@ -46,8 +46,6 @@ def try_with_enumerate(data, buffer_size):
         start_pos = index - buffer_size
         end_pos = index
         sample = data[start_pos:end_pos]
-        #print(f'sample: {sample}')
-        #print(f'set: {set(sample)}')
         num_unique_chars_in_sample = len(set(sample))
         if num_unique_chars_in_sample == buffer_size:
             return index
