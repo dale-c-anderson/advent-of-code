@@ -26,7 +26,7 @@ def make_new_script():
         print(f'File {new_script_dest} already exists. Not overwriting.')
         return
     with open('./solution.py.j2') as t:
-        rendered = Template(t.read()).render(DD=args.day, default_year=args.year)
+        rendered = Template(t.read()).render(DD=args.day, YYYY=args.year)
     with open(new_script_dest, "w") as fh:
         fh.write(rendered)
     os.chmod(new_script_dest, 0o755)
