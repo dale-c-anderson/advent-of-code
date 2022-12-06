@@ -46,7 +46,23 @@ def all_unique(buff):
 
 
 def part2(data):
-    return 0
+    bufsize = 14
+    buff = []
+    count = 0
+    for char in data:
+        log.debug(f'char: {char}')
+        count += 1
+        buff.append(char)
+        log.debug(buff)
+        if len(buff) > bufsize:
+            buff.pop(0)
+        #log.debug(f'buff after pop: {buff}')
+        if len(buff) >= bufsize:
+            uniq_check = all_unique(buff)
+            #log.debug(f'uniq_check: {uniq_check}')
+            if uniq_check:
+               break
+    return count
 
 
 if __name__ == "__main__":
