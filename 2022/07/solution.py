@@ -87,42 +87,42 @@ def part1(transcript_raw):
 
     # # Show dirs before we sum totals
     for dir_name, dir_bytes in dir_data.items():
-        print(f'BEFORE {dir_bytes}\t{dir_name}\t')
-    print('')
+        log.debug(f'BEFORE {dir_bytes}\t{dir_name}\t')
+    log.debug('')
 
     # Sum up all subdirectory bytes
     for dir_name, dir_bytes in dir_data.items():
-        #print(f'Checking {dir_name}')
+        #log.debug(f'Checking {dir_name}')
         combined_total = 0
         match_count = 0
         for match_dir_name, match_dir_bytes in dir_data.items():   # iter on both keys and values
             if match_dir_name.startswith(dir_name):
-                #print(f'MATCH   {match_dir_bytes}\t{match_dir_name}\t')
+                #log.debug(f'MATCH   {match_dir_bytes}\t{match_dir_name}\t')
                 match_count += 1
                 combined_total += int(match_dir_bytes)
-        #print('')
+        #log.debug('')
         if match_count > 1:
           dir_data[dir_name] = combined_total
         # if f'dir_name' in dir_data.keys():
-        #     print(f'FOUND   {dir_bytes}\t{dir_name}\t')
+        #     log.debug(f'FOUND   {dir_bytes}\t{dir_name}\t')
         # else:
-        #     print(f'not     {dir_bytes}\t{dir_name}\t')
+        #     log.debug(f'not     {dir_bytes}\t{dir_name}\t')
 
     #
-    print('')
+    log.debug('')
     for dir_name, dir_bytes in dir_data.items():
-        print(f'AFTER {dir_bytes}\t{dir_name}\t')
+        log.debug(f'AFTER {dir_bytes}\t{dir_name}\t')
 
 
-    print('')
+    log.debug('')
     bytes_limit = 100000
     total = 0
     for dir_name, dir_bytes in dir_data.items():
         if int(dir_bytes) <= bytes_limit:
             total += int(dir_bytes)
-            print(f'INCLUDE {dir_bytes}\t{dir_name}\t')
+            log.debug(f'INCLUDE {dir_bytes}\t{dir_name}\t')
         else:
-            print(f'        {dir_bytes}\t{dir_name}\t')
+            log.debug(f'        {dir_bytes}\t{dir_name}\t')
 
     return total
 
