@@ -132,16 +132,28 @@ def part1(dir_data):
 
 
 def part2(dir_data):
-    bytes_limit = 100000
+    current_use = dir_data['/']
+    disk_size = 70000000
+    min_free_space = 30000000
+    min_size_to_delete = current_use - min_free_space
     total = 0
+    candidates = {}
+    log.debug(f'total size {disk_size}')
+    log.debug(f'used       {current_use}')
+    log.debug(f'min free   {min_free_space}')
+    log.debug(f'min_del    {min_size_to_delete}')
     for dir_name, dir_bytes in dir_data.items():
-        if int(dir_bytes) <= bytes_limit:
-            total += int(dir_bytes)
-            log.debug(f'INCLUDE {dir_bytes}\t{dir_name}\t')
+        if int(dir_bytes) >= min_size_to_delete:
+            candidates[dir_name] = dir_bytes
+            log.debug(f'CONSIDER {dir_bytes}\t{dir_name}\t')
         else:
-            log.debug(f'        {dir_bytes}\t{dir_name}\t')
+            log.debug(f'         {dir_bytes}\t{dir_name}\t')
 
-    return total
+    for dir_name, dir_bytes in candidates.items():
+        log.debug(f'CANDIDATE {dir_bytes}\t{dir_name}\t')
+
+    smallest_possible = min(candidates.values())
+    return smallest_possible
 
 
 
