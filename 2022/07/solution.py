@@ -135,7 +135,7 @@ def part2(dir_data):
     current_use = dir_data['/']
     disk_size = 70000000
     min_free_space = 30000000
-    min_size_to_delete = current_use - min_free_space
+    min_size_to_delete = current_use - disk_size + min_free_space
     total = 0
     candidates = {}
     log.debug(f'total size {disk_size}')
