@@ -75,17 +75,49 @@ def part1(transcript_raw):
         else:
             raise ValueError('Unhandled Parts[0] condition')
 
+    # Show dirs before we sum totals
+    for dir_name, dir_bytes in dir_data.items():
+        print(f'BEFORE {dir_bytes}\t{dir_name}\t')
 
+    print('')
+
+    # Sum up all subdirectory bytes
+    for dir_name, dir_bytes in dir_data.items():
+        #print(f'Checking {dir_name}')
+        combined_total = 0
+        match_count = 0
+        for match_dir_name, match_dir_bytes in dir_data.items():   # iter on both keys and values
+            if match_dir_name.startswith(dir_name):
+                #print(f'MATCH   {match_dir_bytes}\t{match_dir_name}\t')
+                match_count += 1
+                combined_total += int(match_dir_bytes)
+        #print('')
+        if match_count > 1:
+            dir_data[dir_name] =  combined_total
+        # if f'dir_name' in dir_data.keys():
+        #     print(f'FOUND   {dir_bytes}\t{dir_name}\t')
+        # else:
+        #     print(f'not     {dir_bytes}\t{dir_name}\t')
+
+
+    print('')
+    for dir_name, dir_bytes in dir_data.items():
+        print(f'AFTER {dir_bytes}\t{dir_name}\t')
+
+
+    print('')
     bytes_limit = 100000
     total = 0
     for dir_name, dir_bytes in dir_data.items():
-        if total + dir_bytes <= 100000:
+        if dir_bytes <= 100000:
             total += dir_bytes
             print(f'INCLUDE {dir_bytes}\t{dir_name}\t')
         else:
             print(f'exclude {dir_bytes}\t{dir_name}\t')
 
     print(f'total: {total}')
+
+
 def part2(data):
     return 0
 
