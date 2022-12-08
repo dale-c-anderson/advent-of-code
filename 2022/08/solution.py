@@ -11,7 +11,7 @@ import sys
 
 
 def main():
-    handle = open("./input")
+    handle = open("./test")
     data = handle.read().split('\n')
     data = list(filter(None, data))  # get rid of empty rows
 
@@ -43,29 +43,25 @@ def part1(data):
     for row in data:
         corridor_count = corridor_count +1
         from_left = list(row)
-        log.debug(f' from_left {from_left}')
+        log.debug(f'from_left {from_left}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
         visible_trees = visible_trees + count_trees(from_left)
-        log.debug(f'visible_trees so far {visible_trees}')
 
         corridor_count = corridor_count +1
         from_right = list(reversed(row))
-        log.debug(f' from_right {from_right}')
+        log.debug(f' from_right {from_right}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
         visible_trees = visible_trees + count_trees(from_right)
-        log.debug(f'visible_trees so far {visible_trees}')
 
     # ... From the top and bottom ...
     for column in columns:
         corridor_count = corridor_count +1
         from_top = column
-        log.debug(f' from_top {from_top}')
+        log.debug(f' from_top {from_top}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
         visible_trees = visible_trees + count_trees(from_top)
-        log.debug(f'visible_trees so far {visible_trees}')
 
         corridor_count = corridor_count +1
         from_bottom = list(reversed(column))
-        log.debug(f' from_bottom = {from_bottom}')
+        log.debug(f' from_bottom = {from_bottom}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
         visible_trees = visible_trees + count_trees(from_bottom)
-        log.debug(f'visible_trees so far {visible_trees}')
 
     # ... Finally, deduplicate the corner trees
     visible_trees = visible_trees - 4
