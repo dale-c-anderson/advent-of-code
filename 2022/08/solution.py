@@ -11,7 +11,7 @@ import sys
 
 
 def main():
-    handle = open("./input")
+    handle = open("./test")
     data = handle.read().split('\n')
     data = list(filter(None, data))  # get rid of empty rows
 
@@ -83,44 +83,55 @@ def part2(data):
                 columns[col_index] = []
             columns[col_index].append(char)
 
-    # Calculate visibility
-    visible_trees = 0
+    # Calculate scenic score
+    max_scenic_score = 0
     for row_index, row_as_string in enumerate(data):
         row_as_list = list(row_as_string)
         for col_index, char in enumerate(row_as_string):
             height = int(char)
 
-
             trees_on_top = columns[col_index][0:row_index]
             log.debug(f'f trees_on_top {trees_on_top}')
+            viewing_distance_top = find_distance(height, trees_on_top)
 
             trees_to_left = row_as_list[0:col_index]
             log.debug(f' trees_to_left {trees_to_left}')
+            viewing_distance_left = find_distance(height, trees_to_left)
 
             log.debug(f'height {height}')
 
             trees_to_right = row_as_list[col_index + 1:]
             log.debug(f'f trees_to_right {trees_to_right}')
+            viewing_distance_right = find_distance(height, trees_to_right)
 
             trees_on_bottom = columns[col_index][row_index + 1:]
             log.debug(f'f trees_on_bottom {trees_on_bottom}')
+            viewing_distance_bottom = find_distance(height, trees_on_bottom)
 
-            if all(height > int(x) for x in trees_to_left) \
-                    or all(height > int(x) for x in trees_to_right) \
-                    or all(height > int(x) for x in trees_on_top) \
-                    or all(height > int(x) for x in trees_on_bottom):
-                visible_trees += 1
-                log.debug(f'tree at {row_index},{col_index} is visible')
-            else:
-                log.debug(f'tree at {row_index},{col_index} is hidden')
+            scenic_score = viewing_distance_left * viewing_distance_right \
+                           * viewing_distance_top * viewing_distance_bottom
+
+            log.debug(f'scenic_score: {scenic_score}, left {viewing_distance_left}, top {viewing_distance_top}, bottom {viewing_distance_bottom}, right {viewing_distance_right}')
+
+            if scenic_score >= max_scenic_score:
+                max_scenic_score = scenic_score
+
 
             log.debug('')
 
         log.debug('')
-        log.debug(f'--- new row. Visible trees so far: {visible_trees} --- ')
+        log.debug(f'--- new row. max_scenic_score: {max_scenic_score} --- ')
         log.debug('')
 
-    return visible_trees
+    return max_scenic_score
+
+
+def find_distance(height, trees_on_top):
+    distance = 0
+    for candidate in trees_on_top:
+        if int(height) > int(candidate):
+            distance += 1
+    return distance
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
