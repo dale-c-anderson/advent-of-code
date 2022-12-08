@@ -11,7 +11,7 @@ import sys
 
 
 def main():
-    handle = open("./test")
+    handle = open("./input")
     data = handle.read().split('\n')
     data = list(filter(None, data))  # get rid of empty rows
 
