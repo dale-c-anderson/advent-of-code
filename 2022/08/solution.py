@@ -11,7 +11,7 @@ import sys
 
 
 def main():
-    handle = open("./test")
+    handle = open("./input")
     data = handle.read().split('\n')
     data = list(filter(None, data))  # get rid of empty rows
 
@@ -35,57 +35,47 @@ def part1(data):
                 columns[col_index] = []
             columns[col_index].append(char)
 
-    # Count trees...
+    # Calculate visibility
     visible_trees = 0
-
-    # ... From the left and right ...
-    corridor_count = 0
-    for row in data:
-        corridor_count = corridor_count +1
-        from_left = list(row)
-        log.debug(f'from_left {from_left}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
-        visible_trees = visible_trees + count_trees(from_left)
-
-        corridor_count = corridor_count +1
-        from_right = list(reversed(row))
-        log.debug(f' from_right {from_right}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
-        visible_trees = visible_trees + count_trees(from_right)
-
-    # ... From the top and bottom ...
-    for column in columns:
-        corridor_count = corridor_count +1
-        from_top = column
-        log.debug(f' from_top {from_top}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
-        visible_trees = visible_trees + count_trees(from_top)
-
-        corridor_count = corridor_count +1
-        from_bottom = list(reversed(column))
-        log.debug(f' from_bottom = {from_bottom}, visible_trees before {visible_trees}, corridor_count {corridor_count}')
-        visible_trees = visible_trees + count_trees(from_bottom)
-
-    # ... Finally, deduplicate the corner trees
-    visible_trees = visible_trees - 4
-
-    log.debug(f'corridor_count {corridor_count}')
-    return visible_trees
+    for row_index, row_as_string in enumerate(data):
+        row_as_list = list(row_as_string)
+        for col_index, char in enumerate(row_as_string):
+            height = int(char)
 
 
-def count_trees(some_list):
-    visible_trees = 0
-    tallest_tree_height = int(-1)
-    tree_count = 0
-    for tree_height in some_list:
-        tree_count += 1
-        tree_height = int(tree_height)
-        if tree_height > tallest_tree_height:
-            visible_trees += 1
-            tallest_tree_height = tree_height
-            log.debug(f'tree_height {tree_height}, tree_count {tree_count}, visible_trees {visible_trees}')
+            trees_on_top = columns[col_index][0:row_index]
+            log.debug(f'f trees_on_top {trees_on_top}')
+
+            trees_to_left = row_as_list[0:col_index]
+            log.debug(f' trees_to_left {trees_to_left}')
+
+            log.debug(f'height {height}')
+
+            trees_to_right = row_as_list[col_index + 1:]
+            log.debug(f'f trees_to_right {trees_to_right}')
+
+            trees_on_bottom = columns[col_index][row_index + 1:]
+            log.debug(f'f trees_on_bottom {trees_on_bottom}')
+
+            if all(height > int(x) for x in trees_to_left) \
+                    or all(height > int(x) for x in trees_to_right) \
+                    or all(height > int(x) for x in trees_on_top) \
+                    or all(height > int(x) for x in trees_on_bottom):
+                visible_trees += 1
+                log.debug(f'tree at {row_index},{col_index} is visible')
+            else:
+                log.debug(f'tree at {row_index},{col_index} is hidden')
+
+            log.debug('')
+
+        log.debug('')
+        log.debug(f'--- new row. Visible trees so far: {visible_trees} --- ')
+        log.debug('')
+
     return visible_trees
 
 def part2(data):
     return 0
-
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
