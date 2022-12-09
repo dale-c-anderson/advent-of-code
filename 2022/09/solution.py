@@ -14,8 +14,8 @@ def main():
     handle = open("./input")
     data = handle.read().splitlines()
 
-    part1_answer = part1(data)
-    print(f'Part 1: {part1_answer}')
+    # part1_answer = part1(data)
+    # print(f'Part 1: {part1_answer}')
 
     part2_answer = part2(data)
     print(f'Part 2: {part2_answer}')
@@ -83,8 +83,34 @@ def part2(moves):
     head_positions = [
         [0, 0],
     ]
-    tail_positions = [
-        [0, 0],
+    tails = [
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
+        [
+            [0, 0],
+        ],
     ]
     deltas = {
         'L': (-1, 0),
@@ -92,6 +118,7 @@ def part2(moves):
         'U': (0, 1),
         'D': (0, -1)
     }
+    tail_9_positions = 0
     for move in moves:
         direction, distance = move.split()
         delta = deltas[direction]
@@ -103,36 +130,40 @@ def part2(moves):
             hy_new = hy + delta[1]
             log.debug(f'New head position: {hx_new}, {hy_new}')
             head_positions.append([hx_new, hy_new])
-            for tail in range(9):
+            for tail_index, tail_positions in enumerate(tails):
+                log.info(f'Processing tail {tail_index + 1}')
                 tx, ty = tail_positions[-1]
                 tx_new, ty_new = tx, ty  # Set a default in case they don't move
                 if direction == 'L':
                     if hx_new + 1 < tx:
                         tx_new = hx_new + 1
                         ty_new = hy_new
-                        log.info('Moving tail left')
+                        log.info(f'Moving tail {tail_index + 1} left')
                 elif direction == 'R':
                     if hx_new - 1 > tx:
                         tx_new = hx_new - 1
                         ty_new = hy_new
-                        log.info('Moving tail right')
+                        log.info(f'Moving tail {tail_index + 1} right')
                 elif direction == 'U':
                     if hy_new - 1 > ty:
                         tx_new = hx_new
                         ty_new = hy_new - 1
-                        log.info('Moving tail up')
+                        log.info(f'Moving tail {tail_index + 1} up')
                 elif direction == 'D':
                     if hy_new + 1 < ty:
                         tx_new = hx_new
                         ty_new = hy_new + 1
-                        log.info('Moving tail down')
+                        log.info(f'Moving tail {tail_index + 1} down')
                 else:
                     raise ValueError(f'Unknown direction: {direction}')
-                log.debug(f'New tail position: {tx_new}, {ty_new}')
-                tail_positions.append([tx_new, ty_new])
+                # log.debug(f'New tail {tail_index + 1} position: {tx_new}, {ty_new}')
+                if tail_index == 8:
+                    if [tx_new, ty_new] not in tail_positions:
+                        log.info(f'New *UNIQUE* tail {tail_index + 1} position: {tx_new}, {ty_new}')
+                        tail_9_positions += 1
+                tails[tail_index].append([tx_new, ty_new])
 
-    unique_tail_positions = set(tuple(i) for i in tail_positions)
-    return len(unique_tail_positions)
+    return tail_9_positions
 
 
 if __name__ == "__main__":
