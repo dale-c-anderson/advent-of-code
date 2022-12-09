@@ -80,7 +80,61 @@ def part1(moves):
 
 
 def part2(data):
-    return 0
+    head_positions = [
+        [0, 0],
+    ]
+    tail_positions = [
+        [0, 0],
+    ]
+    vectors = {
+        'L': (-1, 0),
+        'R': (1, 0),
+        'U': (0, 1),
+        'D': (0, -1)
+    }
+    for move in moves:
+        direction, distance = move.split()
+        vector = vectors[direction]
+        log.info(f'Processing {direction} {distance}')
+        for _ in range(int(distance)):
+            hx, hy = head_positions[-1]
+            tx, ty = tail_positions[-1]
+            log.debug(f'Current head position: {hx}, {hy}')
+            hx_new = hx + vector[0]
+            hy_new = hy + vector[1]
+            log.debug(f'New head position: {hx_new}, {hy_new}')
+            head_positions.append([hx_new, hy_new])
+            tx_new, ty_new = tx, ty  # Set a default in case they don't move
+            if direction == 'L':
+                if hx_new + 1 < tx:
+                    tx_new = hx_new + 1
+                    ty_new = hy_new
+                    log.info('Moving tail left')
+            elif direction == 'R':
+                if hx_new - 1 > tx:
+                    tx_new = hx_new - 1
+                    ty_new = hy_new
+                    log.info('Moving tail right')
+            elif direction == 'U':
+                if hy_new - 1 > ty:
+                    tx_new = hx_new
+                    ty_new = hy_new - 1
+                    log.info('Moving tail up')
+            elif direction == 'D':
+                if hy_new + 1 < ty:
+                    tx_new = hx_new
+                    ty_new = hy_new + 1
+                    log.info('Moving tail down')
+            else:
+                raise ValueError(f'Unknown direction: {direction}')
+            log.debug(f'New tail position: {tx_new}, {ty_new}')
+            tail_positions.append([tx_new, ty_new])
+            # if [tx_new, ty_new] not in tail_positions:
+            #     log.debug(f'New *UNIQUE* tail position: {tx_new}, {ty_new}')
+    #log.debug(f'Head positions: {head_positions}')
+    #log.debug(f'Tail positions: {tail_positions}')
+    unique_tail_positions = set(tuple(i) for i in tail_positions)
+    return len(unique_tail_positions)
 
 
 if __name__ == "__main__":
