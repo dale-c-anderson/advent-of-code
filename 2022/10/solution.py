@@ -22,7 +22,43 @@ def main(data0):
 
 
 def part1(data1):
-    return data1
+    register_value = 1
+    op_costs = {
+        'noop': 1,
+        'addx': 2,
+    }
+    cycles_left = 0
+    cycle_number = 0
+    op = None
+    signal_strength_sum = 0
+    op_value = 0
+    while cycles_left > 0 or len(data1) > 0:
+        cycle_number += 1
+        signal_strength = register_value * cycle_number
+        log.debug(f'cycle {cycle_number}, left {cycles_left}, op {op}, opval {op_value}, register_value {register_value}, singla_strength {signal_strength}, signal_strength_sum {signal_strength_sum}, len(data) {len(data1)}')
+        if ((cycle_number -20) % 40 == 0 and cycle_number > 40) or cycle_number == 20:
+            signal_strength_sum += signal_strength
+            log.info(f'SUMMING SIGNAL_STRENGTH at cycle {cycle_number}, signal_strength_sum {signal_strength_sum}')
+        if cycles_left > 1:
+            cycles_left -= 1
+            continue
+        else:
+            if op == 'addx':
+                register_value += int(op_value)
+            if len(data1) == 0:
+                break
+            instruction = data1.pop(0)
+            if ' ' in instruction:
+                op, op_value = instruction.split(' ')
+                log.debug(f'op: {op}, op_value: {op_value}')
+            else:
+                op = instruction
+                log.debug(f'op: {op}')
+            cycles_left = op_costs[op]
+
+
+    return signal_strength_sum
+
 
 
 def part2(data2):
