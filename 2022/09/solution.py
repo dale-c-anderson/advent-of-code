@@ -130,11 +130,13 @@ def part2(moves):
                             elif py > ty + 1:
                                 tx_new = px
                                 ty_new = py - 1
-                                log.info(f' --- Moving tail {tail_index} up')
+                                direction = 'U'
+                                log.info(f' --- Moving tail {tail_index} up, next direction is {direction}')
                             elif py < ty - 1:
                                 tx_new = px
                                 ty_new = py + 1
-                                log.info(f' --- Moving tail {tail_index} down')
+                                log.info(f' --- Moving tail {tail_index} down, next direction is {direction}')
+                                direction = 'D'
                         elif direction == 'R':
                             if px - 1 > tx:
                                 tx_new = px - 1
@@ -143,11 +145,13 @@ def part2(moves):
                             elif py > ty + 1:
                                 tx_new = px
                                 ty_new = py - 1
-                                log.info(f' --- Moving tail {tail_index} up')
+                                direction = 'U'
+                                log.info(f' --- Moving tail {tail_index} up, next direction is {direction}')
                             elif py < ty - 1:
                                 tx_new = px
                                 ty_new = py + 1
-                                log.info(f' --- Moving tail {tail_index} down')
+                                direction = 'D'
+                                log.info(f' --- Moving tail {tail_index} down, next direction is {direction}')
                         elif direction == 'U':
                             if py - 1 > ty:
                                 tx_new = px
@@ -156,11 +160,13 @@ def part2(moves):
                             elif px > tx + 1:
                                 tx_new = px - 1
                                 ty_new = py
-                                log.info(f' --- Moving tail {tail_index} right')
+                                direction = 'R'
+                                log.info(f' --- Moving tail {tail_index} right, next direction is {direction}')
                             elif px < tx - 1:
                                 tx_new = px + 1
                                 ty_new = py
-                                log.info(f' --- Moving tail {tail_index} left')
+                                direction = 'L'
+                                log.info(f' --- Moving tail {tail_index} left, next direction is {direction}')
                         elif direction == 'D':
                             if py + 1 < ty:
                                 tx_new = px
@@ -169,11 +175,13 @@ def part2(moves):
                             elif px > tx + 1:
                                 tx_new = px - 1
                                 ty_new = py
-                                log.info(f' --- Moving tail {tail_index} right')
+                                direction = 'R'
+                                log.info(f' --- Moving tail {tail_index} right, next direction is {direction}')
                             elif px < tx - 1:
                                 tx_new = px + 1
                                 ty_new = py
-                                log.info(f' --- Moving tail {tail_index} left')
+                                direction = 'L'
+                                log.info(f' --- Moving tail {tail_index} left, next direction is {direction}')
                         else:
                             raise ValueError(f'Unknown direction: {direction}')
 
