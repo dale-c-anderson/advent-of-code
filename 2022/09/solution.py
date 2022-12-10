@@ -83,71 +83,108 @@ def part2(moves):
     tails = []
     for i in range(0, 10):
         tails.append([[0, 0]])  # Each tail contains list of positions
-    log.debug(f'Tails: {tails}')
+    log.debug(f'Tails initial: {tails}')
     deltas = {
         'L': (-1, 0),
         'R': (1, 0),
         'U': (0, 1),
         'D': (0, -1)
     }
-    for move in moves:
+    for move_index, move in enumerate(moves):
         direction, head_distance = move.split()
         head_distance = int(head_distance)
         delta = deltas[direction]
-        log.info(f'- Direction {direction} { head_distance}')
+        log.info('')
+        log.info(f'- Move {move_index + 1}: {direction} { head_distance}')
         for distance_moved_so_far in range(head_distance):
             distance_moved_so_far = int(distance_moved_so_far) + 1  # Just get this into a human form
-            log.debug(f'-- Distance {distance_moved_so_far} of {head_distance}')
+            log.debug(f'-- Step {distance_moved_so_far} of {head_distance}')
             # Real head position
             head_positions = tails[0]  # Very first tail is actually head.
             hx, hy = head_positions[-1]  # Last position in list.
             hx_new = hx + delta[0]
             hy_new = hy + delta[1]
-            log.debug(f'--- Head now {hx_new}, {hy_new}')
-            tails[0].append([hx_new, hy_new])  # Very first tail is actually head.
+            tails[0].append([hx_new, hy_new])  # Very first tail is head.
+            log.debug(f'-- Moved head to {hx_new}, {hy_new}')
             keep_checking_tails = True
             for tail_index, tail_pos_list in enumerate(tails):
                 #log.debug(f'--- Decision: tail_index {tail_index}, distance_moved_so_far {distance_moved_so_far}, keep_checking_tails {keep_checking_tails}, ')
                 if (tail_index > 0):  # Don't count the head as a tail
-                    log.debug(f'--- Checking tail {tail_index}')
-                    if True or keep_checking_tails:  # Once one tail stops moving, none of the others will either.
-                        this_tail = tails[tail_index]
-                        tx, ty = this_tail[-1]  # Last tail position recorded
+                    if keep_checking_tails:  # Once one tail stops moving, none of the others will either.
+                        log.debug(f'--- Checking tail {tail_index}')
+                        log.debug(f'          n       x, y')
                         previous_tail = tails[tail_index - 1]   # For tail 1, this will actually be head.
                         px, py = previous_tail[-1]
+                        log.debug(f'---- Tail {tail_index - 1} is at {px}, {py}')
+
+                        this_tail = tails[tail_index]
+                        tx, ty = this_tail[-1]  # Last tail position recorded
+                        log.debug(f'---- Tail {tail_index} is at {tx}, {ty}')
+
                         tx_new, ty_new = tx, ty  # Set a default in case this tail doesn't need to move
                         if direction == 'L':
                             if px + 1 < tx:
                                 tx_new = px + 1
                                 ty_new = py
-                                log.info(f'Moving tail {tail_index} left')
+                                log.info(f' --- Moving tail {tail_index} left')
+                            elif py > ty + 1:
+                                tx_new = px
+                                ty_new = py - 1
+                                log.info(f' --- Moving tail {tail_index} up')
+                            elif py < ty - 1:
+                                tx_new = px
+                                ty_new = py + 1
+                                log.info(f' --- Moving tail {tail_index} down')
                         elif direction == 'R':
                             if px - 1 > tx:
                                 tx_new = px - 1
                                 ty_new = py
-                                log.info(f'Moving tail {tail_index} right')
+                                log.info(f' --- Moving tail {tail_index} right')
+                            elif py > ty + 1:
+                                tx_new = px
+                                ty_new = py - 1
+                                log.info(f' --- Moving tail {tail_index} up')
+                            elif py < ty - 1:
+                                tx_new = px
+                                ty_new = py + 1
+                                log.info(f' --- Moving tail {tail_index} down')
                         elif direction == 'U':
                             if py - 1 > ty:
                                 tx_new = px
                                 ty_new = py - 1
-                                log.info(f'Moving tail {tail_index} up')
+                                log.info(f' --- Moving tail {tail_index} up')
+                            elif px > tx + 1:
+                                tx_new = px - 1
+                                ty_new = py
+                                log.info(f' --- Moving tail {tail_index} right')
+                            elif px < tx - 1:
+                                tx_new = px + 1
+                                ty_new = py
+                                log.info(f' --- Moving tail {tail_index} left')
                         elif direction == 'D':
                             if py + 1 < ty:
                                 tx_new = px
                                 ty_new = py + 1
-                                log.info(f'Moving tail {tail_index} down')
+                                log.info(f' --- Moving tail {tail_index} down')
+                            elif px > tx + 1:
+                                tx_new = px - 1
+                                ty_new = py
+                                log.info(f' --- Moving tail {tail_index} right')
+                            elif px < tx - 1:
+                                tx_new = px + 1
+                                ty_new = py
+                                log.info(f' --- Moving tail {tail_index} left')
                         else:
                             raise ValueError(f'Unknown direction: {direction}')
 
                         if [tx_new, ty_new] != [tx, ty]:
                             log.debug(f'--- Tail {tail_index} now {tx_new}, {ty_new} (moved)')
                         else:
-                            log.debug(f'--- Tail {tail_index} now {tx_new}, {ty_new}')
                             keep_checking_tails = False
+                            log.debug(f'--- Tail {tail_index} not moved - tail checking turning off')
                         tails[tail_index].append([tx_new, ty_new])  # "Tail"
-                        log.debug('')
-        log.debug(f'Tails: {list(tail[-1] for tail in tails)}')
-        log.debug('')
+                        log.info(f' --- Tails: {list(tail[-1] for tail in tails)}')
+                        log.info('')
 
 
     tail_positions = tails[9]  # == tail no. 9, since tail 0 is head.
