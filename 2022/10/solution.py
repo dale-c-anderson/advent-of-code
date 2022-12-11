@@ -74,23 +74,27 @@ def part2(data2):
     cycles_left = 0
     cycle_number = -1
     op = None
-    signal_strength_sum = 0
     op_value = 0
-    while cycles_left > 0 or len(data2) > 0:
+    while (cycles_left > 0 or len(data2) > 0):
         cycle_number += 1
-        signal_strength = register_value * cycle_number
-        log.debug(f'begin cycle {cycle_number}, left {cycles_left}, op {op}, opval {op_value}'
-                  f', register_value {register_value}, signal_strength {signal_strength}'
-                  f', signal_strength_sum {signal_strength_sum}, len(data) {len(data2)}'
+        sprite_min = register_value - 1
+        sprite_max = register_value + 1
+        pixel_pos = cycle_number % 40 - 1
+        log.debug(f'begin cycle {cycle_number}. Cycles left {cycles_left}. Op {op}. PP {pixel_pos}'
+                  f', RV {register_value}, sprite_min {sprite_min}, sprite_max {sprite_max}, CN % 40 = {cycle_number % 40}'
                   )
+        what_to_render = ''
+        if cycle_number > 0 and pixel_pos <= sprite_max and pixel_pos >= sprite_min:
+            what_to_render = '#'
+            log.debug('printing #')
+        elif cycle_number > 0:
+            what_to_render = '.'
+            log.debug('printing .')
+        print(what_to_render, end='')
 
-        if cycle_number % 40 == 0:
-            print('')
-            log.info(f'------- adding {signal_strength} to {signal_strength_sum} at cycle {cycle_number}')
-            signal_strength_sum += signal_strength
-            log.info(f'------- new sum {signal_strength_sum}')
-        else:
-            print('.', end='')
+        if cycle_number % 40 == 0 and cycle_number > 0:
+            print('')  # start next CRT line
+            log.debug('printing newline')
 
         if cycles_left > 1:
             cycles_left -= 1
