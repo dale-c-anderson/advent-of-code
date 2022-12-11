@@ -8,12 +8,13 @@ __author__ = "Dale Anderson"
 import argparse
 import logging
 import sys
+import re
 
 
 def main(data0):
 
     if args.part1 or not args.part2:
-        part1_answer = part1(data0.splitlines())
+        part1_answer = part1(data0.split('\n\n'))
         print(f'Part 1: {part1_answer}')
 
     if args.part2 or not args.part1:
@@ -21,12 +22,33 @@ def main(data0):
         print(f'Part 2: {part2_answer}')
 
 
-def part1(data1):
-    return data1
+def part1(data):
+    monkeys = []
+    for monkey_config in data:
+        lines = monkey_config.splitlines()
+        starting_items = lines[1].split(':')[1].split(',')
+        starting_items = [int(i) for i in starting_items]
+        operation_def = lines[2].split(':')[1].strip()
+        divisible_by = int(re.findall(r'\d+', lines[3])[0])
+        true_action = int(re.findall(r'\d+', lines[4])[0])
+        false_action = int(re.findall(r'\d+', lines[5])[0])
+        monkey = {
+            'items': starting_items,
+            'operation_def': operation_def,
+            'mod_test': divisible_by,
+            'true_action': true_action,
+            'false_action': false_action,
+        }
+        monkeys.append(monkey)
+        log.debug(f'monkey: {monkey}')
 
 
-def part2(data2):
-    return data2
+    for rounds in range(1, 20):
+        pass
+
+
+def part2(data):
+    pass
 
 
 if __name__ == "__main__":
