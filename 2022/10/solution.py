@@ -76,17 +76,22 @@ def part2(data2):
     op = None
     signal_strength_sum = 0
     op_value = 0
-    while cycles_left > 0 or len(data1) > 0:
+    while cycles_left > 0 or len(data2) > 0:
         cycle_number += 1
         signal_strength = register_value * cycle_number
         log.debug(f'begin cycle {cycle_number}, left {cycles_left}, op {op}, opval {op_value}'
                   f', register_value {register_value}, signal_strength {signal_strength}'
-                  f', signal_strength_sum {signal_strength_sum}, len(data) {len(data1)}'
+                  f', signal_strength_sum {signal_strength_sum}, len(data) {len(data2)}'
                   )
-        if ((cycle_number -20) % 40 == 0 and cycle_number > 40) or cycle_number == 20:
+
+        if cycle_number % 40 == 0:
+            print('')
             log.info(f'------- adding {signal_strength} to {signal_strength_sum} at cycle {cycle_number}')
             signal_strength_sum += signal_strength
             log.info(f'------- new sum {signal_strength_sum}')
+        else:
+            print('.', end='')
+
         if cycles_left > 1:
             cycles_left -= 1
             continue
@@ -95,9 +100,9 @@ def part2(data2):
                 log.info(f'           adding {op_value} to {register_value} at cycle {cycle_number}')
                 register_value += int(op_value)
                 log.info(f'           new register_value {register_value}')
-            if len(data1) == 0:
+            if len(data2) == 0:
                 break
-            instruction = data1.pop(0)
+            instruction = data2.pop(0)
             if ' ' in instruction:
                 op, op_value = instruction.split(' ')
                 log.debug(f'op: {op}, op_value: {op_value}')
@@ -106,7 +111,6 @@ def part2(data2):
                 log.debug(f'op: {op}')
             cycles_left = op_costs[op]
 
-    return signal_strength_sum
 
 
 if __name__ == "__main__":
