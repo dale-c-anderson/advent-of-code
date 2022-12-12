@@ -44,13 +44,14 @@ def parse_config(data):
             'mod_test': divisible_by,
             'true_action': true_action,
             'false_action': false_action,
+            'items_inspected': 0
         }
         monkeys.append(monkey)
         log.debug(f'monkey {monkey_index}: {monkey}')
 
 def do_rounds(rounds):
     global monkeys
-    for round in range(1, rounds):
+    for round in range(1, rounds + 1):
         log.debug(f'Round {round}')
         for monkey_index, monkey in enumerate(monkeys):
             examine_items(monkey_index, monkey)
@@ -60,7 +61,7 @@ def do_rounds(rounds):
 
 def examine_items(monkey_index, monkey):
     global monkeys
-    items_to_remove = []
+    items_inspected = 0
     log.debug(f'  monkey {monkey_index}')  #: {monkey}')
     items = monkey['items']
     operation_def = monkey['operation_def']
@@ -73,6 +74,7 @@ def examine_items(monkey_index, monkey):
     # log.debug(f'   true_action: {true_action}')
     # log.debug(f'   false_action: {false_action}')
     for item in items:
+        items_inspected += 1
         log.debug(f'    item: {item}')
         old_worry_level = item
         new_worry_level = process_worry_level(old_worry_level, operation_def)
@@ -83,9 +85,10 @@ def examine_items(monkey_index, monkey):
         else:
             log.debug(f'   false pass item WL {new_worry_level} to monkey {false_action}')
             monkeys[false_action]['items'].append(new_worry_level)
-        items_to_remove.append(item)
 
+    log.debug(f'   items_inspected: {items_inspected}')
     monkeys[monkey_index]['items'] = []
+    monkeys[monkey_index]['items_inspected'] += items_inspected
 
 
 def process_worry_level(old_worry_level, operation_def):
