@@ -73,16 +73,16 @@ def examine_items(monkey_index, monkey):
         log.debug(f'    item: {item}')
         old_worry_level = item
         new_worry_level = process_worry_level(old_worry_level, operation_def)
-        log.debug(f'new_worry_level: {new_worry_level}')
+        log.debug(f'new_worry_level: {new_worry_level}, mod_test: {mod_test}')
         if new_worry_level % mod_test == 0:
-            monkey[true_action].items.append(new_worry_level)
+            log.debug(f'  test true - passing item to monkey {true_action}')
+            monkeys[true_action]['items'].append(new_worry_level)
         else:
-            monkey[false_action].items.append(new_worry_level)
+            log.debug(f'  test false - passing item to monkey {false_action}')
+            monkeys[false_action]['items'].append(new_worry_level)
         items_to_remove.append(item)
 
-    for i in range(items_to_remove):
-        log.debug(f'removing {items_to_remove[i]} from monkey {monkey_index}')
-        monkeys[monkey_index]['items'].pop(0)   # remove it from this monkey's list.
+    monkeys[monkey_index]['items'] = []
 
 
 def process_worry_level(old_worry_level, operation_def):
