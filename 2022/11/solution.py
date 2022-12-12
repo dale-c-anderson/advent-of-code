@@ -30,7 +30,7 @@ def part1(data):
 
 def parse_config(data):
     global monkeys
-    for monkey_config in data:
+    for monkey_index, monkey_config in enumerate(data):
         lines = monkey_config.splitlines()
         starting_items = lines[1].split(':')[1].split(',')
         starting_items = [int(i) for i in starting_items]
@@ -46,7 +46,7 @@ def parse_config(data):
             'false_action': false_action,
         }
         monkeys.append(monkey)
-        log.debug(f'monkey: {monkey}')
+        log.debug(f'monkey {monkey_index}: {monkey}')
 
 def do_rounds(rounds):
     global monkeys
@@ -54,31 +54,34 @@ def do_rounds(rounds):
         log.debug(f'Round {round}')
         for monkey_index, monkey in enumerate(monkeys):
             examine_items(monkey_index, monkey)
+        log.debug(f'end round {round}')
+        for monkey_index, monkey in enumerate(monkeys):
+            log.debug(f'monkey {monkey_index}: {monkey}')
 
 def examine_items(monkey_index, monkey):
     global monkeys
     items_to_remove = []
-    log.debug(f'  monkey[{monkey_index}]: {monkey}')
+    log.debug(f'  monkey {monkey_index}')  #: {monkey}')
     items = monkey['items']
     operation_def = monkey['operation_def']
     mod_test = monkey['mod_test']
     true_action = monkey['true_action']
     false_action = monkey['false_action']
-    log.debug(f'   items: {items}')
-    log.debug(f'   operation_def: {operation_def}')
-    log.debug(f'   mod_test: {mod_test}')
-    log.debug(f'   true_action: {true_action}')
-    log.debug(f'   false_action: {false_action}')
+    # log.debug(f'   items: {items}')
+    # log.debug(f'   operation_def: {operation_def}')
+    # log.debug(f'   mod_test: {mod_test}')
+    # log.debug(f'   true_action: {true_action}')
+    # log.debug(f'   false_action: {false_action}')
     for item in items:
         log.debug(f'    item: {item}')
         old_worry_level = item
         new_worry_level = process_worry_level(old_worry_level, operation_def)
-        log.debug(f'new_worry_level: {new_worry_level}, mod_test: {mod_test}')
+        # log.debug(f'   new_worry_level: {new_worry_level}, mod_test: {mod_test}')
         if new_worry_level % mod_test == 0:
-            log.debug(f'  test true - passing item to monkey {true_action}')
+            log.debug(f'   true pass item WL {new_worry_level} to monkey {true_action}')
             monkeys[true_action]['items'].append(new_worry_level)
         else:
-            log.debug(f'  test false - passing item to monkey {false_action}')
+            log.debug(f'   false pass item WL {new_worry_level} to monkey {false_action}')
             monkeys[false_action]['items'].append(new_worry_level)
         items_to_remove.append(item)
 
@@ -86,13 +89,12 @@ def examine_items(monkey_index, monkey):
 
 
 def process_worry_level(old_worry_level, operation_def):
-    log.debug(f' ------------ 89 opecation_def: {operation_def}')
+    #log.debug(f' ------------ 89 opecation_def: {operation_def}')
+    # log.debug(f'             old_worry_level: {old_worry_level}')
     parts = operation_def.split(' ')
     operator = parts[3]
     value = parts[4]
 
-    old_worry_level = old_worry_level // 3
-    log.debug(f' ------------ 93 old_worry_level divided: {old_worry_level}')
     if value == 'old':
         value = old_worry_level
     else:
@@ -103,6 +105,11 @@ def process_worry_level(old_worry_level, operation_def):
         new_worry_level = old_worry_level + value
     else:
         raise ValueError(f'Unknown operator: {operator}')
+    # log.debug(f'             new_worry_level operated: {new_worry_level}')
+
+    new_worry_level = new_worry_level // 3
+    # log.debug(f'             new_worry_level divided down: {new_worry_level}')
+
     return new_worry_level
 
 
@@ -137,7 +144,7 @@ if __name__ == "__main__":
 
     # Prefix log output with timestamps
     default_date_format = '%Y-%m-%d %H:%M:%S'
-    default_log_format = '%(asctime)s.%(msecs)03d %(levelname)s %(module)s/%(funcName)s(): %(message)s'
+    default_log_format = '%(levelname)s %(module)s/%(funcName)s(): %(message)s'
 
     # A named logger lets us add more handlers if/when needed.
     log = logging.getLogger("foo")
