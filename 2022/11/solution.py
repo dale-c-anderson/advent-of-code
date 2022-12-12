@@ -15,11 +15,15 @@ def main(data0):
 
     data0 = data0.split('\n\n')
 
+    global divide_by_three
+
     if args.part1 or not args.part2:
+        divide_by_three = True
         part1_answer = part1(data0)
         print(f'Part 1: {part1_answer}')
 
     if args.part2 or not args.part1:
+        divide_by_three = False
         part2_answer = part2(data0)
         print(f'Part 2: {part2_answer}')
 
@@ -114,7 +118,9 @@ def process_worry_level(old_worry_level, operation_def):
         raise ValueError(f'Unknown operator: {operator}')
     # log.debug(f'             new_worry_level operated: {new_worry_level}')
 
-    new_worry_level = new_worry_level // 3
+    global divide_by_three
+    if divide_by_three:
+        new_worry_level = new_worry_level // 3
     # log.debug(f'             new_worry_level divided down: {new_worry_level}')
 
     return new_worry_level
