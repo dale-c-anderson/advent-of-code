@@ -24,30 +24,29 @@ def main(data0):
 def parse_input(data):
     global grid
     grid = []
-
     for y, line in enumerate(data.splitlines()):
         grid.append([])
         for x, char in enumerate(line):
             grid[y].append((char, 0))
-
     for line in grid:
-        for char, _ in line:
+        for char, visits in line:
             print(char, end='')
-        print('\t', end='')
-        for _, visits in line:
-            print(visits, end='')
         print()
 
+    for line in grid:
+        for char, visits in line:
+            print(visits, end='')
+        print()
 
 
 def part1(data):
     parse_input(data)
     global positions_visited
     positions_visited = []
-    startx, starty, num_visits = find_single_pos('S')
+    startx, starty = find_single_pos('S')
     positions_visited.append((startx, starty))
     log.debug(f'positions_visited: {positions_visited}')
-    endx, endy, visits = find_single_pos('E')
+    endx, endy = find_single_pos('E')
     while not (endx, endy) in positions_visited:
         move_to_higher_letter()
     return len(positions_visited)
@@ -58,7 +57,7 @@ def move_to_higher_letter():
     global positions_visited
     #log.debug(positions_visited)
     startx, starty = positions_visited[-1]
-    current_char, num_visits_current = grid[starty][startx]
+    current_char = grid[starty][startx]
     if current_char == 'S':
         current_char = 'a'
     # log.debug(f' current_char: {current_char}, startx: {startx}, starty: {starty}')
@@ -70,25 +69,22 @@ def move_to_higher_letter():
             log.debug(f'  check x: {check_x}, y: {check_y}, out of bounds')
             continue
 
-        char_at_check_pos, num_visits_at_check = grid[check_y][check_x]
+        char_at_check_pos = grid[check_y][check_x]
         if ord(char_at_check_pos) - ord(current_char) == 1:  # Step up to next level
             log.debug(f'  found higher letter {char_at_check_pos} at {check_x},{check_y}')
-            if num_visits_at_check <= 2:
-                # OK to visit a position there, and to back out, but not more than twice
+            if not (check_x, check_y) in positions_visited:
+                # never visit the same position twice
                 positions_visited.append((check_x, check_y))
-                grid[check_y][check_x] = (char_at_check_pos, num_visits_at_check + 1)
                 return
         elif ord(char_at_check_pos) - ord(current_char) == 53:  # We found 'E' from 'z'
             log.debug(f'  found exit at {check_x},{check_y}')
             positions_visited.append((check_x, check_y))
-            grid[check_y][check_x] = (char_at_check_pos, num_visits_at_check + 1)
             return
         elif ord(char_at_check_pos) - ord(current_char) in (1, 0):  # Neither a step up or the end was found, but same level was found, so keep going.
-            if num_visits_at_check <= 2:
-                # OK to visit a position there, and to back out, but not more than twice
+            if not (check_x, check_y) in positions_visited:
+                # never visit the same position twice
                 log.debug(f'  found same level {char_at_check_pos} at {check_x},{check_y}')
                 positions_visited.append((check_x, check_y))
-                grid[check_y][check_x] = (char_at_check_pos, num_visits_at_check + 1)
                 return
             log.debug(f'  found same level {char_at_check_pos} at {check_x},{check_y}, but we were ')
 
@@ -97,14 +93,14 @@ def move_to_higher_letter():
 
     # If we get to this step, it means we have not finished, and no better char was found, so:
     positions_visited.pop()    # - Move the cursor to the previous position, so we can try again.
-    grid[starty][startx] = ('.', num_visits_at_check + 1) # - "Burn" the current position so it can't be moved to again.
+    grid[starty][startx] = '.' # - "Burn" the current position so it can't be moved to again.
 
 def find_single_pos(needle):
     global grid
     for y, line in enumerate(grid):
-        for x, (char, visits) in enumerate(line):
+        for x, char in enumerate(line):
             if char == needle:
-                return x, y, visits
+                return x, y
 
 
 
