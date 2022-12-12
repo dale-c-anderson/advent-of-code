@@ -13,12 +13,14 @@ import re
 
 def main(data0):
 
+    data0 = data0.split('\n\n')
+
     if args.part1 or not args.part2:
-        part1_answer = part1(data0.split('\n\n'))
+        part1_answer = part1(data0)
         print(f'Part 1: {part1_answer}')
 
     if args.part2 or not args.part1:
-        part2_answer = part2(data0.splitlines())
+        part2_answer = part2(data0)
         print(f'Part 2: {part2_answer}')
 
 
@@ -119,7 +121,12 @@ def process_worry_level(old_worry_level, operation_def):
 
 
 def part2(data):
-    pass
+    global monkeys
+    monkeys = []
+    parse_config(data)
+    do_rounds(200)
+    two_highest = sorted(monkeys, key=lambda k: k['items_inspected'], reverse=True)[:2]
+    return two_highest[0]['items_inspected'] * two_highest[1]['items_inspected']
 
 
 if __name__ == "__main__":
