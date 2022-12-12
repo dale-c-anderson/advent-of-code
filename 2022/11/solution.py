@@ -27,6 +27,8 @@ def part1(data):
     monkeys = []
     parse_config(data)
     do_rounds(20)
+    two_highest = sorted(monkeys, key=lambda k: k['items_inspected'], reverse=True)[:2]
+    return two_highest[0]['items_inspected'] * two_highest[1]['items_inspected']
 
 def parse_config(data):
     global monkeys
