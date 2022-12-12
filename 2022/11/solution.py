@@ -90,6 +90,9 @@ def process_worry_level(old_worry_level, operation_def):
     parts = operation_def.split(' ')
     operator = parts[3]
     value = parts[4]
+
+    old_worry_level = old_worry_level // 3
+    log.debug(f' ------------ 93 old_worry_level divided: {old_worry_level}')
     if value == 'old':
         value = old_worry_level
     else:
