@@ -27,15 +27,10 @@ def parse_input(data):
     for y, line in enumerate(data.splitlines()):
         grid.append([])
         for x, char in enumerate(line):
-            grid[y].append((char, 0))
+            grid[y].append(char)
     for line in grid:
-        for char, visits in line:
+        for char in line:
             print(char, end='')
-        print()
-
-    for line in grid:
-        for char, visits in line:
-            print(visits, end='')
         print()
 
 
@@ -62,34 +57,58 @@ def move_to_higher_letter():
         current_char = 'a'
     # log.debug(f' current_char: {current_char}, startx: {startx}, starty: {starty}')
 
+    log.debug('')
     for x, y in (0,1) , (1,0), (-1,0), (0,-1):
         check_x = startx + x  # chars
         check_y = starty + y  # lines
         if check_x < 0 or check_y < 0 or check_x >= len(grid[0]) or check_y >= len(grid):
-            log.debug(f'  check x: {check_x}, y: {check_y}, out of bounds')
+            log.debug(f'  {check_x},{check_y} == out of bounds')
             continue
 
         char_at_check_pos = grid[check_y][check_x]
+        num_visits_to_check_pos = positions_visited.count((check_x, check_y))
         if ord(char_at_check_pos) - ord(current_char) == 1:  # Step up to next level
-            log.debug(f'  found higher letter {char_at_check_pos} at {check_x},{check_y}')
-            if not (check_x, check_y) in positions_visited:
-                # never visit the same position twice
-                positions_visited.append((check_x, check_y))
-                return
-        elif ord(char_at_check_pos) - ord(current_char) == 53:  # We found 'E' from 'z'
-            log.debug(f'  found exit at {check_x},{check_y}')
+            log.debug(f'  Moving from {current_char} to {char_at_check_pos} (higher) at {check_x},{check_y}, visits: {num_visits_to_check_pos}.')
             positions_visited.append((check_x, check_y))
             return
-        elif ord(char_at_check_pos) - ord(current_char) in (1, 0):  # Neither a step up or the end was found, but same level was found, so keep going.
-            if not (check_x, check_y) in positions_visited:
-                # never visit the same position twice
-                log.debug(f'  found same level {char_at_check_pos} at {check_x},{check_y}')
+
+    for x, y in (0,1) , (1,0), (-1,0), (0,-1):
+        check_x = startx + x  # chars
+        check_y = starty + y  # lines
+        if check_x < 0 or check_y < 0 or check_x >= len(grid[0]) or check_y >= len(grid):
+            log.debug(f'  {check_x},{check_y} == out of bounds')
+            continue
+
+        if ord(char_at_check_pos) - ord(current_char) == 53:  # We found 'E' from 'z'
+            log.debug(f'  FOUND EXIT at {check_x},{check_y}, visits: {num_visits_to_check_pos}')
+            positions_visited.append((check_x, check_y))
+            return
+
+    for x, y in (0,1) , (1,0), (-1,0), (0,-1):
+        check_x = startx + x  # chars
+        check_y = starty + y  # lines
+        if check_x < 0 or check_y < 0 or check_x >= len(grid[0]) or check_y >= len(grid):
+            log.debug(f'  {check_x},{check_y} == out of bounds')
+            continue
+
+        if ord(char_at_check_pos) - ord(current_char) in (1, 0):  # Neither a step up or the end was found, but same level was found, so keep going.
+            if num_visits_to_check_pos < 1: # Only move to a position once on the way, and once on the way back if we are removing.
+                log.debug(f'  Moving from {current_char} to {char_at_check_pos} (same level) at {check_x},{check_y}, visits: {num_visits_to_check_pos}')
                 positions_visited.append((check_x, check_y))
                 return
-            log.debug(f'  found same level {char_at_check_pos} at {check_x},{check_y}, but we were ')
+            else:
+                log.debug(f'  Not moving from {current_char} to same {char_at_check_pos} at {check_x},{check_y}, since we already visted {num_visits_to_check_pos} times. Staying to burn char {current_char} at {startx},{starty}')
+
+    for x, y in (0,1) , (1,0), (-1,0), (0,-1):
+        check_x = startx + x  # chars
+        check_y = starty + y  # lines
+        if check_x < 0 or check_y < 0 or check_x >= len(grid[0]) or check_y >= len(grid):
+            log.debug(f'  {check_x},{check_y} == out of bounds')
+            continue
+        log.debug(f'  Rejected move from {current_char} to {char_at_check_pos} at {check_x},{check_y} (visits: {num_visits_to_check_pos}).')
 
 
-    log.debug(f'  check x: {check_x}, y: {check_y}, char {char_at_check_pos} is not better than {current_char}. Removing last position visited.')
+    log.debug(f'  Removing char {current_char} from last position visited at {startx},{starty}.')
 
     # If we get to this step, it means we have not finished, and no better char was found, so:
     positions_visited.pop()    # - Move the cursor to the previous position, so we can try again.
