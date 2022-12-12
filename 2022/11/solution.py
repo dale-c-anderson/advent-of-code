@@ -23,7 +23,13 @@ def main(data0):
 
 
 def part1(data):
+    global monkeys
     monkeys = []
+    parse_config(data)
+    do_rounds(20)
+
+def parse_config(data):
+    global monkeys
     for monkey_config in data:
         lines = monkey_config.splitlines()
         starting_items = lines[1].split(':')[1].split(',')
@@ -42,9 +48,59 @@ def part1(data):
         monkeys.append(monkey)
         log.debug(f'monkey: {monkey}')
 
+def do_rounds(rounds):
+    global monkeys
+    for round in range(1, rounds):
+        log.debug(f'Round {round}')
+        for monkey_index, monkey in enumerate(monkeys):
+            examine_items(monkey_index, monkey)
 
-    for rounds in range(1, 20):
-        pass
+def examine_items(monkey_index, monkey):
+    global monkeys
+    items_to_remove = []
+    log.debug(f'  monkey[{monkey_index}]: {monkey}')
+    items = monkey['items']
+    operation_def = monkey['operation_def']
+    mod_test = monkey['mod_test']
+    true_action = monkey['true_action']
+    false_action = monkey['false_action']
+    log.debug(f'   items: {items}')
+    log.debug(f'   operation_def: {operation_def}')
+    log.debug(f'   mod_test: {mod_test}')
+    log.debug(f'   true_action: {true_action}')
+    log.debug(f'   false_action: {false_action}')
+    for item in items:
+        log.debug(f'    item: {item}')
+        old_worry_level = item
+        new_worry_level = process_worry_level(old_worry_level, operation_def)
+        log.debug(f'new_worry_level: {new_worry_level}')
+        if new_worry_level % mod_test == 0:
+            monkey[true_action].items.append(new_worry_level)
+        else:
+            monkey[false_action].items.append(new_worry_level)
+        items_to_remove.append(item)
+
+    for i in range(items_to_remove):
+        log.debug(f'removing {items_to_remove[i]} from monkey {monkey_index}')
+        monkeys[monkey_index]['items'].pop(0)   # remove it from this monkey's list.
+
+
+def process_worry_level(old_worry_level, operation_def):
+    log.debug(f' ------------ 89 opecation_def: {operation_def}')
+    parts = operation_def.split(' ')
+    operator = parts[3]
+    value = parts[4]
+    if value == 'old':
+        value = old_worry_level
+    else:
+        value = int(value)
+    if operator == '*':
+        new_worry_level = old_worry_level * value
+    elif operator == '+':
+        new_worry_level = old_worry_level + value
+    else:
+        raise ValueError(f'Unknown operator: {operator}')
+    return new_worry_level
 
 
 def part2(data):
