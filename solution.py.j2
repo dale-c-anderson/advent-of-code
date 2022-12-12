@@ -12,21 +12,23 @@ import sys
 
 def main(data0):
 
+    data0 = data0.splitlines()
+
     if args.part1 or not args.part2:
-        part1_answer = part1(data0.splitlines())
+        part1_answer = part1(data0)
         print(f'Part 1: {part1_answer}')
 
     if args.part2 or not args.part1:
-        part2_answer = part2(data0.splitlines())
+        part2_answer = part2(data0)
         print(f'Part 2: {part2_answer}')
 
 
-def part1(data1):
-    return data1
+def part1(data):
+    return 0
 
 
-def part2(data2):
-    return data2
+def part2(data):
+    return 0
 
 
 if __name__ == "__main__":
