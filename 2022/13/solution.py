@@ -43,27 +43,9 @@ def left_side_is_smaller(left, right):
     indent = ' ' * level
     ret = None  # Default == no determination ... keep checking.
     log.debug(f'{indent} Compare {left} vs {right}')
-    if type(left) is list and type(right) is list:
-        for sub_left, sub_right in zip(left, right):
-            sub_ret = left_side_is_smaller(sub_left, sub_right)
-            if sub_ret is not None:
-                level -= 1
-                return sub_ret
-        ####### STILL NEED TO DO SOMETHING WITH LISTS, but not sure what yet.
-        # if len(left) < len(right):
-        #     level -= 1
-        #     log.debug(f'{indent} Left list is smaller. Order is good.')
-        #     return True
-    elif type(left) is int and type(right) is list:
-        log.debug(f'{indent} Mixed types. Convert left and compare sub items.')
+    if type(left) is int and type(right) is int and left == right:
         level -= 1
-        return left_side_is_smaller([left], right)
-    elif type(left) is list and type(right) is int:
-        log.debug(f'{indent} Mixed types. Convert right and compare sub items.')
-        level -= 1
-        return left_side_is_smaller(left, [right])
-    elif type(left) is int and type(right) is int and left == right:
-        pass # log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
+        return None # log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
     elif type(left) is int and type(right) is int and left < right:
         log.debug(f'{indent} Left is smaller. Order good.')
         level -= 1
@@ -72,8 +54,35 @@ def left_side_is_smaller(left, right):
         log.debug(f'{indent} Left is larger. Order bad.')
         level -= 1
         return False
-    else:
-        log.debug(f'{indent} ------------- Dont know what to do with {left} and {right}')
+    elif type(left) is int and type(right) is list:
+        log.debug(f'{indent} Mixed types. Convert left and compare sub items.')
+        level -= 1
+        return left_side_is_smaller([left], right)
+    elif type(left) is list and type(right) is int:
+        log.debug(f'{indent} Mixed types. Convert right and compare sub items.')
+        level -= 1
+        return left_side_is_smaller(left, [right])
+
+    else:  # Must be type(left) is list and type(right) is list:
+        for sub_left, sub_right in zip(left, right):
+            sub_ret = left_side_is_smaller(sub_left, sub_right)
+            if sub_ret is not None:
+                level -= 1
+                return sub_ret
+
+        # If we got to this point, then one of the lists is longer than the other.
+        if len(left) < len(right):
+            log.debug(f'{indent} Left ran out of items. Order is good.')
+            level -= 1
+            return True
+        elif len(left) > len(right):
+            log.debug(f'{indent} Right ran out of items. Order is bad.')
+            level -= 1
+            return False
+        else:
+            log.debug(f'{indent} Both lists are the same length. Keep comparing.')
+
+
     level -= 1
     return ret
 
