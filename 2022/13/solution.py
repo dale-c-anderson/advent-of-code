@@ -27,10 +27,12 @@ level = 0
 def part1(data):
     corrects = []
     for index, pair in enumerate(data):
+        log.debug(f'pair: {index + 1}')
         left = json.loads(pair.split('\n')[0])
         right = json.loads(pair.split('\n')[1])
         if left_side_is_smaller(left, right):
             corrects.append(index + 1)
+        log.debug(f'corrects: {corrects}')
         log.debug('')
     return sum(corrects)
 
@@ -40,44 +42,39 @@ def left_side_is_smaller(left, right):
     level += 1
     indent = ' ' * level
     ret = None  # Default == no determination ... keep checking.
-    log.debug(f'{indent} compare left: {left}, right: {right}, type: {type(left)}, type: {type(right)}')
+    log.debug(f'{indent} Compare {left} vs {right}')
     if type(left) is list and type(right) is list:
-        while len(left) > 0 and len(right) > 0:
-            sub_left = left.pop(0)
-            sub_right = right.pop(0)
-            log.debug(f'{indent} both are lists. Comparing sub items. sub_left: {sub_left}, sub_right: {sub_right}')
+        for sub_left, sub_right in zip(left, right):
             sub_ret = left_side_is_smaller(sub_left, sub_right)
             if sub_ret is not None:
                 level -= 1
                 return sub_ret
-        if len(right) > 0:
-            log.debug(f'{indent} Left ran out of items. Order is good.')
-            ret = True
-        elif len(left) > 0:
-            log.debug(f'{indent} Right ran out of items. Order is bad.')
-            ret = False
+        ####### STILL NEED TO DO SOMETHING WITH LISTS, but not sure what yet.
+        # if len(left) < len(right):
+        #     level -= 1
+        #     log.debug(f'{indent} Left list is smaller. Order is good.')
+        #     return True
     elif type(left) is int and type(right) is list:
-        log.debug(f'{indent} Mixed types. Convert and compare sub items.')
-        left = [left]
-        sub_left = left.pop(0)
-        sub_right = right.pop(0)
-        ret = left_side_is_smaller(sub_left, sub_right)
+        log.debug(f'{indent} Mixed types. Convert left and compare sub items.')
+        level -= 1
+        return left_side_is_smaller([left], right)
     elif type(left) is list and type(right) is int:
-        log.debug(f'{indent} Mixed types. Convert and compare sub items.')
-        right = [right]
-        sub_left = left.pop(0)
-        sub_right = right.pop(0)
-        ret = left_side_is_smaller(sub_left, sub_right)
+        log.debug(f'{indent} Mixed types. Convert right and compare sub items.')
+        level -= 1
+        return left_side_is_smaller(left, [right])
     elif type(left) is int and type(right) is int and left == right:
-        log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
+        pass # log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
     elif type(left) is int and type(right) is int and left < right:
-        log.debug(f'{indent} both are ints, and left is smaller. Order good.')
-        ret = True
+        log.debug(f'{indent} Left is smaller. Order good.')
+        level -= 1
+        return True
     elif type(left) is int and type(right) is int and left > right:
-        log.debug(f'{indent} both are ints, and left is larger. Order bad.')
-        ret = False
+        log.debug(f'{indent} Left is larger. Order bad.')
+        level -= 1
+        return False
+    else:
+        log.debug(f'{indent} ------------- Dont know what to do with {left} and {right}')
     level -= 1
-    log.debug(f'{indent} return: {ret}')
     return ret
 
 def part2(data):
