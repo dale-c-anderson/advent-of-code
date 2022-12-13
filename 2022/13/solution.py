@@ -45,7 +45,8 @@ def left_side_is_smaller(left, right):
     log.debug(f'{indent} Compare {left} vs {right}')
     if type(left) is int and type(right) is int and left == right:
         level -= 1
-        return None # log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
+        # log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
+        return None
     elif type(left) is int and type(right) is int and left < right:
         log.debug(f'{indent} Left is smaller. Order good.')
         level -= 1
@@ -68,15 +69,16 @@ def left_side_is_smaller(left, right):
             sub_ret = left_side_is_smaller(sub_left, sub_right)
             if sub_ret is not None:
                 level -= 1
+                # No need to emit message; previous determination already did.
                 return sub_ret
 
-        # If we got to this point, then one of the lists is longer than the other.
+        # If we got to this point, one of the lists is longer than the other.
         if len(left) < len(right):
-            log.debug(f'{indent} Left ran out of items. Order is good.')
+            log.debug(f'{indent} Left ran out of items to compare. Order is good.')
             level -= 1
             return True
         elif len(left) > len(right):
-            log.debug(f'{indent} Right ran out of items. Order is bad.')
+            log.debug(f'{indent} Right ran out of items to compare. Order is bad.')
             level -= 1
             return False
         else:
