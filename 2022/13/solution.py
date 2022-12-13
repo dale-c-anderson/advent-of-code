@@ -8,25 +8,80 @@ __author__ = "Dale Anderson"
 import argparse
 import logging
 import sys
+import json
 
 
 def main(data0):
+    data0 = data0.split('\n\n')
 
     if args.part1 or not args.part2:
-        part1_answer = part1(data0.splitlines())
+        part1_answer = part1(data0)
         print(f'Part 1: {part1_answer}')
 
     if args.part2 or not args.part1:
-        part2_answer = part2(data0.splitlines())
+        part2_answer = part2(data0)
         print(f'Part 2: {part2_answer}')
 
+global level
+level = 0
+def part1(data):
+    corrects = []
+    for index, pair in enumerate(data):
+        left = json.loads(pair.split('\n')[0])
+        right = json.loads(pair.split('\n')[1])
+        if left_side_is_smaller(left, right):
+            corrects.append(index + 1)
+        log.debug('')
+    return sum(corrects)
 
-def part1(data1):
-    return data1
 
+def left_side_is_smaller(left, right):
+    global level
+    level += 1
+    indent = ' ' * level
+    ret = None  # Default == no determination ... keep checking.
+    log.debug(f'{indent} compare left: {left}, right: {right}, type: {type(left)}, type: {type(right)}')
+    if type(left) is list and type(right) is list:
+        while len(left) > 0 and len(right) > 0:
+            sub_left = left.pop(0)
+            sub_right = right.pop(0)
+            log.debug(f'{indent} both are lists. Comparing sub items. sub_left: {sub_left}, sub_right: {sub_right}')
+            sub_ret = left_side_is_smaller(sub_left, sub_right)
+            if sub_ret is not None:
+                level -= 1
+                return sub_ret
+        if len(right) > 0:
+            log.debug(f'{indent} Left ran out of items. Order is good.')
+            ret = True
+        elif len(left) > 0:
+            log.debug(f'{indent} Right ran out of items. Order is bad.')
+            ret = False
+    elif type(left) is int and type(right) is list:
+        log.debug(f'{indent} Mixed types. Convert and compare sub items.')
+        left = [left]
+        sub_left = left.pop(0)
+        sub_right = right.pop(0)
+        ret = left_side_is_smaller(sub_left, sub_right)
+    elif type(left) is list and type(right) is int:
+        log.debug(f'{indent} Mixed types. Convert and compare sub items.')
+        right = [right]
+        sub_left = left.pop(0)
+        sub_right = right.pop(0)
+        ret = left_side_is_smaller(sub_left, sub_right)
+    elif type(left) is int and type(right) is int and left == right:
+        log.debug(f'{indent} both are ints. Dont return anything. Keep comparing.')
+    elif type(left) is int and type(right) is int and left < right:
+        log.debug(f'{indent} both are ints, and left is smaller. Order good.')
+        ret = True
+    elif type(left) is int and type(right) is int and left > right:
+        log.debug(f'{indent} both are ints, and left is larger. Order bad.')
+        ret = False
+    level -= 1
+    log.debug(f'{indent} return: {ret}')
+    return ret
 
-def part2(data2):
-    return data2
+def part2(data):
+    return 0
 
 
 if __name__ == "__main__":
@@ -56,7 +111,7 @@ if __name__ == "__main__":
 
     # Prefix log output with timestamps
     default_date_format = '%Y-%m-%d %H:%M:%S'
-    default_log_format = '%(asctime)s.%(msecs)03d %(levelname)s %(module)s/%(funcName)s(): %(message)s'
+    default_log_format = '%(levelname)s: %(message)s'
 
     # A named logger lets us add more handlers if/when needed.
     log = logging.getLogger("foo")
