@@ -25,15 +25,58 @@ def main(data0):
 
 
 def part1(data):
-    global rock, sand
-    rock = set()
-    sand = []
-    map_rock(data)
+    global stationary_sand
+    stationary_sand = 0
+
+    global overflowing
+    overflowing = False
+
+    global rock_y_max
+    rock_y_max = map_rock(data)
+
+    # Before
     draw_rock()
+
+    x, y = 500, 0
+    while not overflowing:
+        x, y = drop_sand(x, y)
+
+    # After
+    draw_rock()
+
+    return stationary_sand
+
+
+def drop_sand(sX, sY):
+    global overflowing, stationary_sand
+    if sY > rock_y_max:
+        overflowing = True
+        # log.debug(f'Overflow!')
+        return sX, sY + 1
+    if not (sX, sY + 1) in rock:
+        # Nothing blocking below. Sand can travel down.
+        # log.debug(f'sand grain at {sX},{sY}, dropping down')
+        return sX, sY + 1
+    elif not (sX - 1, sY + 1) in rock:
+        # Nothing blocking down left.
+        # log.debug(f'sand grain at {sX},{sY}, dropping down left')
+        return sX -1, sY + 1
+    elif not (sX + 1, sY + 1) in rock:
+        # Nothing blocking down right.
+        # log.debug(f'sand grain at {sX},{sY}, dropping down right')
+        return sX + 1, sY + 1
+    else:
+        # Sand cannot go anywhere.
+        stationary_sand += 1
+        rock.add((sX, sY))
+        # log.debug(f'Sand landed at {sX},{sY}.')
+        # draw_rock()
+        return 500, 0
 
 
 def map_rock(lines):
     global rock
+    rock = set()
     for line_index, line in enumerate(lines):
         plots = line.split(' -> ')
         for plot_index, plot in enumerate(plots):
@@ -60,9 +103,11 @@ def map_rock(lines):
                 raise ValueError(f'Unknown line type: {x1},{y1} to {x2},{y2}')
             #log.debug(f'Rock: {rock}')
 
+    return max([y for x, y in rock])
 
 def draw_rock():
-    global rock
+    log.handlers[0].flush()
+    global rock, y_min
     x_min = min([i[0] for i in rock])
     x_max = max([x for x, y in rock])
     y_min = min([y for x, y in rock])
@@ -107,7 +152,7 @@ if __name__ == "__main__":
 
     # Prefix log output with timestamps
     default_date_format = '%Y-%m-%d %H:%M:%S'
-    default_log_format = '%(asctime)s.%(msecs)03d %(levelname)s %(module)s/%(funcName)s(): %(message)s'
+    default_log_format = '%(levelname)s %(module)s/%(funcName)s(): %(message)s'
 
     # A named logger lets us add more handlers if/when needed.
     log = logging.getLogger("foo")
