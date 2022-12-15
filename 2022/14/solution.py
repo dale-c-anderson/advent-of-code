@@ -78,10 +78,19 @@ def map_rock(lines):
     global rock
     rock = set()
     for line_index, line in enumerate(lines):
+        plot_one_line(line)
+    return max([y for x, y in rock])
+
+
+def plot_one_line(line):
         plots = line.split(' -> ')
         for plot_index, plot in enumerate(plots):
             if plot_index == 0:
                 continue
+            process_plot(plots, plot_index, plot)
+
+
+def process_plot(plots, plot_index, plot):
             # Get our from/to points
             x1, y1 = [int(i) for i in plots[plot_index - 1].split(',')]
             x2, y2 = [int(i) for i in plot.split(',')]
@@ -103,7 +112,6 @@ def map_rock(lines):
                 raise ValueError(f'Unknown line type: {x1},{y1} to {x2},{y2}')
             #log.debug(f'Rock: {rock}')
 
-    return max([y for x, y in rock])
 
 def draw_rock():
     log.handlers[0].flush()
