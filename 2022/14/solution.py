@@ -49,6 +49,9 @@ def part1(data):
 
 def drop_sand(sX, sY):
     global overflowing, stationary_sand
+    if (500, 0) in rock:
+        log.debug(f'Top of pyramid has been reached')
+        overflowing = True
     if sY > rock_y_max:
         overflowing = True
         # log.debug(f'Overflow!')
@@ -115,7 +118,7 @@ def process_plot(plots, plot_index, plot):
 
 def draw_rock():
     log.handlers[0].flush()
-    global rock, y_min
+    global rock
     x_min = min([i[0] for i in rock])
     x_max = max([x for x, y in rock])
     y_min = min([y for x, y in rock])
@@ -130,7 +133,38 @@ def draw_rock():
         print()
 
 def part2(data):
-    return 0
+    global stationary_sand
+    stationary_sand = 0
+
+    global overflowing
+    overflowing = False
+
+    global rock_y_max
+    rock_y_max = map_rock(data)
+    x_min = min([x for x, y in rock])
+    x_max = max([x for x, y in rock])
+    y_max = max([y for x, y in rock])
+    log.debug(f'x_min: {x_min}, x_max: {x_max}, y_max: {y_max}')
+
+
+    # Create a new base under everything, based on a pyramid shape
+    x_min = x_min - y_max + 2
+    x_max = x_max + y_max + 2
+    rock_y_max = y_max + 2
+    extra_line = f'{x_min},{rock_y_max} -> {x_max},{rock_y_max}'
+    log.debug(f'extra_line: {extra_line}')
+    plot_one_line(extra_line)
+    # Before
+    draw_rock()
+
+    x, y = 500, 0
+    while not overflowing:
+        x, y = drop_sand(x, y)
+
+    # After
+    draw_rock()
+
+    return stationary_sand - 1
 
 
 if __name__ == "__main__":
