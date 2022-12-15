@@ -33,15 +33,13 @@ def part1(data):
     global rock_y_max
     rock_y_max = map_rock(data)
 
-    # Before
-    draw_rock()
+    draw_rock('Part 1 Before')   # Requires -v to see it.
 
     x, y = 500, 0
     while not overflowing:
         x, y = drop_sand(x, y)
 
-    # After
-    draw_rock()
+    draw_rock('Part 1 After')   # Requires -v to see it.
 
     return stationary_sand
 
@@ -111,10 +109,11 @@ def process_plot(plots, plot_index, plot):
             #log.debug(f'Rock: {rock}')
 
 
-def draw_rock():
+def draw_rock(title):
     if not at_least_log_level_info():
         return
     log.handlers[0].flush()
+    print(f'\n--------- {title} ---------\n')
     global rock
     x_min = min([x for x, y in rock])
     x_max = max([x for x, y in rock])
@@ -156,15 +155,14 @@ def part2(data):
     extra_line = f'{x_min},{rock_y_max} -> {x_max},{rock_y_max}'
     log.debug(f'extra_line: {extra_line}')
     plot_one_line(extra_line)
-    # Before
-    draw_rock()
+
+    draw_rock('Part 2 Before')   # Requires -v to see it.
 
     x, y = 500, 0
     while not overflowing:
         x, y = drop_sand(x, y)
 
-    # After
-    draw_rock()
+    draw_rock('Part 2 After')   # Requires -v to see it.
 
     return stationary_sand
 
