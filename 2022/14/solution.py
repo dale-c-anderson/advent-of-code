@@ -8,7 +8,6 @@ __author__ = "Dale Anderson"
 import argparse
 import logging
 import sys
-#import numpy as np
 
 
 def main(data0):
@@ -52,28 +51,24 @@ def drop_sand(sX, sY):
     if (500, 0) in rock:
         log.debug(f'Top of pyramid has been reached')
         overflowing = True
+        return 500, 0
     if sY > rock_y_max:
+        log.debug(f'Overflow! (off the edge)')
         overflowing = True
-        # log.debug(f'Overflow!')
         return sX, sY + 1
     if not (sX, sY + 1) in rock:
-        # Nothing blocking below. Sand can travel down.
         # log.debug(f'sand grain at {sX},{sY}, dropping down')
         return sX, sY + 1
     elif not (sX - 1, sY + 1) in rock:
-        # Nothing blocking down left.
         # log.debug(f'sand grain at {sX},{sY}, dropping down left')
         return sX -1, sY + 1
     elif not (sX + 1, sY + 1) in rock:
-        # Nothing blocking down right.
         # log.debug(f'sand grain at {sX},{sY}, dropping down right')
         return sX + 1, sY + 1
     else:
-        # Sand cannot go anywhere.
         stationary_sand += 1
         rock.add((sX, sY))
-        # log.debug(f'Sand landed at {sX},{sY}.')
-        # draw_rock()
+        log.debug(f'Sand landed at {sX},{sY}.')
         return 500, 0
 
 
@@ -117,9 +112,11 @@ def process_plot(plots, plot_index, plot):
 
 
 def draw_rock():
+    if not at_least_log_level_info():
+        return
     log.handlers[0].flush()
     global rock
-    x_min = min([i[0] for i in rock])
+    x_min = min([x for x, y in rock])
     x_max = max([x for x, y in rock])
     y_min = min([y for x, y in rock])
     y_max = max([y for x, y in rock])
@@ -131,6 +128,11 @@ def draw_rock():
             else:
                 print(' ', end='')
         print()
+
+
+def at_least_log_level_info():
+    return log.handlers[0].level in ([logging.INFO, logging.DEBUG])
+
 
 def part2(data):
     global stationary_sand
@@ -164,7 +166,7 @@ def part2(data):
     # After
     draw_rock()
 
-    return stationary_sand - 1
+    return stationary_sand
 
 
 if __name__ == "__main__":
