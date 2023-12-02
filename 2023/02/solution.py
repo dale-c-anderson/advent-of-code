@@ -36,8 +36,6 @@ def part1(data):
     # Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
     # Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 
-    # Convert data (list of lines) to a dict of game ids, and their respective lists of rolls
-
     valid_games = []
     for line in data:
         if len(line) == 0:
@@ -74,7 +72,33 @@ def part1(data):
 
 
 def part2(data):
-    return 0
+    game_powers = []
+    for line in data:
+        if len(line) == 0:
+            continue
+        game_mins = {
+            'red': 0,
+            'green': 0,
+            'blue': 0,
+        }
+        game_id, game = line.split(': ')
+        rolls = game.split('; ')
+        for roll in rolls:
+            log.debug(f'roll {roll}')
+            cubes = roll.split(', ')
+            for cube in cubes:
+                log.debug(f'cube: {cube}')
+                number = int(cube.split()[0])
+                color = cube.split()[1]
+                log.debug(f'number: {number}, color: {color} , game_mins[color]: {game_mins[color]}')
+                if number > game_mins[color]:
+                    game_mins[color] = number
+        game_power = game_mins['red'] * game_mins['green'] * game_mins['blue']
+        log.debug(f'power {game_power}, game_mins: {game_mins}')
+        game_powers.append(game_power)
+        log.debug("\n\n")
+
+    return sum(game_powers)
 
 
 if __name__ == "__main__":
