@@ -11,7 +11,6 @@ import sys
 
 
 def main(data0):
-
     data0 = data0.splitlines()
 
     if args.part1 or not args.part2:
@@ -42,33 +41,21 @@ def part1(data):
             continue
         game_id, game = line.split(': ')
         game_id = game_id.replace('Game ', '')
-        log.debug(f'game_id: {game_id}')
         rolls = game.split('; ')
         game_is_valid = True
         for roll in rolls:
-            log.debug(f'roll {roll}')
             cubes = roll.split(', ')
             for cube in cubes:
-                log.debug(f'cube: {cube}')
                 number = int(cube.split()[0])
                 color = cube.split()[1]
-                log.debug(f'number: {number}, color: {color}')
                 if color not in limits:
-                    log.debug('color not in limits')
                     game_is_valid = False
                 if number > limits[color]:
-                    log.debug('number > limits[color]')
                     game_is_valid = False
-        log.debug("\n\n")
         if game_is_valid:
-           valid_games.append(int(game_id))
-
-
+            valid_games.append(int(game_id))
 
     return sum(valid_games)
-
-
-
 
 
 def part2(data):
@@ -84,19 +71,14 @@ def part2(data):
         game_id, game = line.split(': ')
         rolls = game.split('; ')
         for roll in rolls:
-            log.debug(f'roll {roll}')
             cubes = roll.split(', ')
             for cube in cubes:
-                log.debug(f'cube: {cube}')
                 number = int(cube.split()[0])
                 color = cube.split()[1]
-                log.debug(f'number: {number}, color: {color} , game_mins[color]: {game_mins[color]}')
                 if number > game_mins[color]:
                     game_mins[color] = number
         game_power = game_mins['red'] * game_mins['green'] * game_mins['blue']
-        log.debug(f'power {game_power}, game_mins: {game_mins}')
         game_powers.append(game_power)
-        log.debug("\n\n")
 
     return sum(game_powers)
 
