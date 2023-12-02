@@ -46,8 +46,36 @@ def part1(data):
 
 
 def part2(data):
-    return 0
+    # example data:
+    # two1nine
+    # eightwothree
+    # abcone2threexyz
+    # xtwone3four
+    # 4nineeightseven2
+    # zoneight234
+    # 7pqrstsixteen
 
+
+    # Step 1 - replace all english numbers with digits
+
+    new_data = []
+    for line in data:
+        new_line = line
+        new_line = new_line.replace('one', '1')
+        new_line = new_line.replace('two', '2')
+        new_line = new_line.replace('three', '3')
+        new_line = new_line.replace('four', '4')
+        new_line = new_line.replace('five', '5')
+        new_line = new_line.replace('six', '6')
+        new_line = new_line.replace('seven', '7')
+        new_line = new_line.replace('eight', '8')
+        new_line = new_line.replace('nine', '9')
+        new_line = new_line.replace('zero', '0')
+        new_data.append(new_line)
+        print(f"new_line: {new_line}")
+
+    new_sum = part1(new_data)
+    return new_sum
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
