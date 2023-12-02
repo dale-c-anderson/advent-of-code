@@ -25,11 +25,11 @@ def main(data0):
 
 def part1(data):
 
-# example data:
-# 1abc2
-# pqr3stu8vwx
-# a1b2c3d4e5f
-# treb7uchet
+    # example data:
+    #   1abc2
+    #   pqr3stu8vwx
+    #   a1b2c3d4e5f
+    #   treb7uchet
 
     running_total = 0
     for line in data:
@@ -38,12 +38,12 @@ def part1(data):
         last_digit = numbers_only[-1]
         two_digit_number = int(first_digit + last_digit)
         running_total += two_digit_number
-
     return running_total
 
 
 
 def part2(data):
+
     # example data:
     #   two1nine
     #   eightwothree
@@ -55,15 +55,10 @@ def part2(data):
 
     running_total = 0
     for line in data:
-        log.debug(f"line {line}")
         first_digit = find_first_digit(line)
-        log.debug(f"first_digit: {str(first_digit)}")
         last_digit = find_last_digit(line)
-        log.debug(f"last_digit: {str(last_digit)}")
         two_digit_number = int(str(first_digit) + str(last_digit))
-        log.debug(f"two_digit_number: {str(two_digit_number)}")
         running_total += two_digit_number
-        log.debug(f"running_total: {str(running_total)}\n\n")
     return running_total
 
 def find_first_digit(line):
@@ -76,7 +71,6 @@ def find_first_digit(line):
             test = return_number_from_word(new_line)
             if test is not None:
                 return test
-
     raise ValueError('No digits found in line')
 
 
@@ -115,7 +109,6 @@ def return_number_from_word(haystack):
     if 'nine' in haystack:
         return 9
     return None
-
 
 
 if __name__ == "__main__":
