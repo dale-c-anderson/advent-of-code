@@ -11,7 +11,6 @@ import sys
 
 
 def main(data0):
-
     data0 = data0.splitlines()
 
     if args.part1 or not args.part2:
@@ -24,13 +23,6 @@ def main(data0):
 
 
 def part1(data):
-
-    # example data:
-    #   1abc2
-    #   pqr3stu8vwx
-    #   a1b2c3d4e5f
-    #   treb7uchet
-
     running_total = 0
     for line in data:
         numbers_only = ''.join([i for i in line if i.isdigit()])
@@ -41,18 +33,7 @@ def part1(data):
     return running_total
 
 
-
 def part2(data):
-
-    # example data:
-    #   two1nine
-    #   eightwothree
-    #   abcone2threexyz
-    #   xtwone3four
-    #   4nineeightseven2
-    #   zoneight234
-    #   7pqrstsixteen
-
     running_total = 0
     for line in data:
         first_digit = find_first_digit(line)
@@ -60,6 +41,7 @@ def part2(data):
         two_digit_number = int(str(first_digit) + str(last_digit))
         running_total += two_digit_number
     return running_total
+
 
 def find_first_digit(line):
     new_line = ''
