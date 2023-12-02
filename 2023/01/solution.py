@@ -53,50 +53,69 @@ def part2(data):
     #   zoneight234
     #   7pqrstsixteen
 
-    new_data = []
+    running_total = 0
     for line in data:
-        new_line = ''
-        for char in line:  # Crawl through the line char by char, replacing numeric words as they appear.
-            new_line += char
-            if string_contains_number_word(new_line):
-                new_line = replace_word_number_with_digit(new_line)
-        new_data.append(new_line)
-    return part1(new_data)
+        log.debug(f"line {line}")
+        first_digit = find_first_digit(line)
+        log.debug(f"first_digit: {str(first_digit)}")
+        last_digit = find_last_digit(line)
+        log.debug(f"last_digit: {str(last_digit)}")
+        two_digit_number = int(str(first_digit) + str(last_digit))
+        log.debug(f"two_digit_number: {str(two_digit_number)}")
+        running_total += two_digit_number
+        log.debug(f"running_total: {str(running_total)}\n\n")
+    return running_total
+
+def find_first_digit(line):
+    new_line = ''
+    for char in line:
+        new_line += char
+        if char.isdigit():
+            return int(char)
+        else:
+            test = return_number_from_word(new_line)
+            if test is not None:
+                return test
+
+    raise ValueError('No digits found in line')
 
 
-def string_contains_number_word(haystack):
+def find_last_digit(line):
+    backwards_line = line[::-1]
+    backwards_new_line = ''
+    for char in backwards_line:
+        backwards_new_line += char
+        if char.isdigit():
+            return int(char)
+        else:
+            forward_word = backwards_new_line[::-1]
+            test = return_number_from_word(forward_word)
+            if test is not None:
+                return test
+    raise ValueError('No digit found in line')
+
+
+def return_number_from_word(haystack):
     if 'one' in haystack:
-        return True
+        return 1
     if 'two' in haystack:
-        return True
+        return 2
     if 'three' in haystack:
-        return True
+        return 3
     if 'four' in haystack:
-        return True
+        return 4
     if 'five' in haystack:
-        return True
+        return 5
     if 'six' in haystack:
-        return True
+        return 6
     if 'seven' in haystack:
-        return True
+        return 7
     if 'eight' in haystack:
-        return True
+        return 8
     if 'nine' in haystack:
-        return True
-    return False
+        return 9
+    return None
 
-
-def replace_word_number_with_digit(text):
-    text = text.replace('one', '1')
-    text = text.replace('two', '2')
-    text = text.replace('three', '3')
-    text = text.replace('four', '4')
-    text = text.replace('five', '5')
-    text = text.replace('six', '6')
-    text = text.replace('seven', '7')
-    text = text.replace('eight', '8')
-    text = text.replace('nine', '9')
-    return text
 
 
 if __name__ == "__main__":
