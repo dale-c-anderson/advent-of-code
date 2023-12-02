@@ -47,58 +47,31 @@ def part1(data):
 
 def part2(data):
     # example data:
-    # two1nine
-    # eightwothree
-    # abcone2threexyz
-    # xtwone3four
-    # 4nineeightseven2
-    # zoneight234
-    # 7pqrstsixteen
+    #   two1nine
+    #   eightwothree
+    #   abcone2threexyz
+    #   xtwone3four
+    #   4nineeightseven2
+    #   zoneight234
+    #   7pqrstsixteen
 
-    first_number_words_replaced = []
+    new_data = []
     for line in data:
-        # crawl the string, and replace the first english whole-word number with a digit
-        # FIRST WORDS ONLY. We'll do the same thing from the back of the string next.
-        forward_line = ''
-        first_word_has_been_replaced = False
-        for char in line:
-            forward_line += char
-            if not first_word_has_been_replaced:
-                if string_contains_number_word(forward_line):
-                    forward_line = replace_word_number_with_digit(forward_line)
-                    first_word_has_been_replaced = True
+        log.debug(f"Processing: {line}")
+        new_line = ''
+        for char in line:  # Crawl through the line char by char, replacing numeric words as they appear.
+            new_line += char
+            log.debug(f"          {new_line}")
+            if string_contains_number_word(new_line):
+                log.debug(f"Replacing.")
+                new_line = replace_word_number_with_digit(new_line)
+                log.debug(f"            New: {new_line}")
 
-        log.info(f"orig 1\t{line}\treplacement_1\t{forward_line}")
-        first_number_words_replaced.append(forward_line)
-
-
-    # Now repeat the above process but from the back of the string.
-    last_words_replaced = []
-    for line in first_number_words_replaced:
-        # crawl the string from the back, and replace the first english whole-word number with a digit
-        new_string = ''
-        did_replacement = False
-        log.info('\n\n----\n\n')
-        for char in flip(line):
-            new_string = new_string + char
-            log.debug(f"new_string: {new_string}")
-            if not did_replacement:
-                check = flip(new_string)
-                log.debug(f"check: {check}")
-                if string_contains_number_word(check):
-                    replaced = replace_word_number_with_digit(check)
-                    log.debug(f"replaced: {replaced}")
-                    did_replacement = True
-                    new_string = flip(replaced)
-                    log.debug(f"new_string: {new_string}")
-        backward_finished = new_string[::-1]
-        log.info(f"orig 2\t{line}\tbackward_finished\t{backward_finished}")
-        last_words_replaced.append(backward_finished)
-
-
-    new_sum = part1(last_words_replaced)
-
-    return new_sum
+        log.debug(f"Orig: {line}")
+        log.info(f" New: {new_line}")
+        new_data.append(new_line)
+        log.debug("\n")
+    return part1(new_data)
 
 
 def flip(line):
