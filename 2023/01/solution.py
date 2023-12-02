@@ -24,7 +24,25 @@ def main(data0):
 
 
 def part1(data):
-    return 0
+
+# example data:
+# 1abc2
+# pqr3stu8vwx
+# a1b2c3d4e5f
+# treb7uchet
+
+    running_total = 0
+    for line in data:
+        # strip non-numerics
+        numbers_only = ''.join([i for i in line if i.isdigit()])
+        first_digit = numbers_only[0]
+        last_digit = numbers_only[-1]
+        # glue numbers together into an integer
+        two_digit_number = int(first_digit + last_digit)
+        running_total += two_digit_number
+
+    return running_total
+
 
 
 def part2(data):
