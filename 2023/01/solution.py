@@ -33,11 +33,9 @@ def part1(data):
 
     running_total = 0
     for line in data:
-        # strip non-numerics
         numbers_only = ''.join([i for i in line if i.isdigit()])
         first_digit = numbers_only[0]
         last_digit = numbers_only[-1]
-        # glue numbers together into an integer
         two_digit_number = int(first_digit + last_digit)
         running_total += two_digit_number
 
@@ -57,25 +55,13 @@ def part2(data):
 
     new_data = []
     for line in data:
-        log.debug(f"Processing: {line}")
         new_line = ''
         for char in line:  # Crawl through the line char by char, replacing numeric words as they appear.
             new_line += char
-            log.debug(f"          {new_line}")
             if string_contains_number_word(new_line):
-                log.debug(f"Replacing.")
                 new_line = replace_word_number_with_digit(new_line)
-                log.debug(f"            New: {new_line}")
-
-        log.debug(f"Orig: {line}")
-        log.info(f" New: {new_line}")
         new_data.append(new_line)
-        log.debug("\n")
     return part1(new_data)
-
-
-def flip(line):
-    return line[::-1]
 
 
 def string_contains_number_word(haystack):
