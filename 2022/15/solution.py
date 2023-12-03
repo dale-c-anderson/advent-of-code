@@ -26,8 +26,8 @@ def part1(data):
     sensors = set()
     beacons = set()
     cleared = set()
-    map = []
     for line in data:
+        print(f'line: {line}')
         words = line.split()
         # 0      1    2    3    4       5     6  7   8    9
         # Sensor at x=8, y=7: closest beacon is at x=2, y=10
@@ -47,14 +47,16 @@ def part1(data):
             else:
                 xlower = sx - (2 * taxicab_distance - yi)
                 xupper = sx + (2 * taxicab_distance - yi) + 1
-            for x in range(xlower, xupper):
-                cleared.add((x, y))
+
+            if True: #y == by:  # we only care about beacon lines; adding full charts will OOMkill the script
+                for x in range(xlower, xupper):
+                    cleared.add((x, y))
         # log.debug(f'sensor: {sx}, {sy}, beacon: {bx}, {by}, cab distance: {taxicab_distance}')
 
-    # draw_cleared(sensors, beacons, cleared, 'cleared')
+    draw_cleared(sensors, beacons, cleared, 'cleared')
     count = 0
     for x, y in cleared:
-        if y == 2000000:
+        if y == int(args.y_check):
             if not (x, y) in sensors:
                 if not (x, y) in beacons:
                     count += 1
@@ -94,6 +96,7 @@ if __name__ == "__main__":
     parser.add_argument('-1', '-p1', '--part1', action='store_true', help='Run (only) part 1')
     parser.add_argument('-2', '-p2', '--part2', action='store_true', help='Run (only) part 2')
     parser.add_argument("-v", "--verbose", action="count", default=0, help="Verbosity (-v, -vv, etc)")
+    parser.add_argument("-y", "-yval", dest="y_check", type=int, default=2000000, help="Y value to check if not 2000000.")
     args = parser.parse_args()
 
     # Accept input from a named file, a pipe, or the default location
